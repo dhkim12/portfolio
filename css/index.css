@@ -1,0 +1,369 @@
+/* @font-face {
+  font-family: 'NanumSquare';
+  src: url('./fonts/NanumSquareL.ttf') format('truetype');
+  font-weight: 200;
+}
+@font-face {
+  font-family: 'NanumSquare';
+  src: url('./fonts/NanumSquareR.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'NanumSquare';
+  src: url('./fonts/NanumSquareB.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'NanumSquare';
+  src: url('./fonts/NanumSquareEB.ttf') format('truetype');
+  font-weight: 700;
+} */
+/* 모달박스 */
+*{margin: 0; padding: 0;
+}
+.comment_box {
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  margin-top: 50px;
+  overflow: auto;
+  padding: 30px;
+  background: #fff;
+  width: 94%;
+  border: 1px solid #E8E9EC;
+  resize: none;
+  outline: none;
+  font-size: 16px;
+  font-family: 'NanumSquare', sans-serif;
+  line-height: 26px;
+}
+
+/* ui 버튼 */
+header{
+font-size: 14px;
+width: 1000px;
+max-width: 1000px;
+background: #fff;
+position: fixed;
+top: 0;
+left: 50%;
+transform: translateX(-50%);
+padding: 18px 20px;
+z-index: 99999;
+}
+.btn_wrap{
+ margin-top: 30px;text-align: right;
+}
+.btn_wrap button{
+  margin-right: 5px;
+}
+.l_blue{ width: 110px;
+padding: 5px;
+color: #fff;
+background: #4D6BDC;
+text-align: center;
+font-size: 14px;
+
+border: none;}
+.red{width: 110px;
+  font-size: 14px;
+background: #DF696C;color: #fff;border: none; padding: 5px;}
+
+.l_blue:hover{
+background-color: #4E59A4;
+}
+.red:hover{
+background-color: #C96265;
+}
+/* 본문 */
+.re_cover{
+  width: 1000px;
+  margin: 0 auto;
+font-size: 30px;
+text-align: center;
+  border: 1px solid #333;
+  padding: 20px;
+  font-weight: 600;
+}
+.re_cover .r_date{
+  margin-bottom: 10em;
+}
+.re_cover .re_cover_wrap{
+  border: 2px solid #333;
+  height: 1200px;
+
+}
+.re_cover .r_tit{
+  font-size: 60px;
+  padding-top: 5em;
+  margin-bottom:5em;
+
+}
+body {
+position: relative;
+  margin: 0;
+  font-size: 16px;
+  color: rgb(55, 55, 55);
+  font-family: 'NanumSquare', sans-serif;
+}
+li{
+  list-style: none;
+  padding-top: 10px;
+}
+.mt-100 {
+  margin-top: 100px;
+}
+.mt-50 {
+  margin-top: 50px;
+}
+.mt-15 {
+  margin-top: 15px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-5 {
+  margin-top: 5px;
+}
+.mb-100 {
+  margin-bottom: 100px;
+}
+.mb-10 {
+  margin-bottom: 10px;
+}
+.app.main {
+  width: 1000px;
+  max-width: 1000px;
+  margin: auto;
+}
+.app.title {
+  color: rgb(103, 101, 101);
+  font-size: 25px;
+}
+.app.title .sub {
+  color: rgb(55, 55, 55);
+  font-size: 16px;
+  font-weight: normal;
+}
+.panel.title {
+  font-size: 20px;
+  padding: 20px 0;
+}
+.unit {
+  text-align: right;
+}
+.section01 .table-inner{
+  width: 49.5%;;
+}
+.section01 .table-wrap {
+  display: flex;
+  justify-content: space-between;
+  /* display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px; */
+}
+.table-wrap thead {
+  font-size: 16px;
+  font-weight: bold;
+}
+.number.right{text-align: right; 
+font-size: 16px;margin: 20px 10px;}
+.number{font-size: 25px;}
+.table-wrap thead tr th:first-child {
+  border-left: 1px solid #5e9ac8;
+}
+.table-wrap thead tr th:last-child {
+  border-right: 1px solid #5e9ac8;
+}
+.table-wrap tbody tr td:first-child {
+
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #E6EDF2;
+  border-bottom: .5px solid #fff;
+  border-left: .5px solid #E6EDF2;
+}
+.table-wrap tbody tr:last-child :first-child{
+border-bottom: 1px solid #E6EDF2;
+}
+.chart-wrap .comment {
+  font-size: 16px;
+  text-align: center;
+}
+#chart {
+ 
+}
+
+.table-wrap .comment {
+  font-size: 16px;
+  text-align: center;
+}
+.total_comment{
+  font-size: 16px;
+  text-align: left;
+}
+.comment{
+  font-size: 16px;
+  text-align: center;
+
+}
+table {
+  width: 100%;
+}
+th {
+  color: white;
+  border-left: 1px solid white;
+  background-color: #5E9AC8;
+}
+td {
+  border: 0.5px solid #CCCCCC;
+  text-align: right;
+}
+table, th, td {
+  border-collapse: collapse;
+  padding: 10px;
+  font-size: 14px;
+}
+.section01 .total-wrap {
+  display: flex;
+  justify-content: left;
+  width: 49.5%;
+
+  /* grid-template-columns: repeat(2, 1fr);
+  width: calc(50% - 2px); */
+}
+.section01 .total-wrap .title {
+  font-size: 16px;
+  color: white;
+  background-color:#5e9ac8;
+  padding: 14px;
+  text-align: center;
+  width: 50%;
+}
+.section01 .total-wrap .number {
+  border: 1px solid #CCC;
+  font-size: 20px; 
+  font-weight: bold;
+  text-align: right;
+  padding: 12px 16px; width: 50%;
+}
+.section02 .chart_inner{
+  display: flex;
+  justify-content: space-between;
+
+
+}
+.section02 .chart-wrap{
+  width: 100%;
+
+}
+.section02 .table-inner{
+  width: 100%;
+}
+.section02 .total-wrap{
+  width: 100%;
+}
+.section02 .total-wrap .title{
+  font-size: 16px;
+  color: white;
+  background-color:#5e9ac8;
+  padding: 14px;
+  text-align: center;
+  width: 100%;
+
+}
+.section02 .total-wrap .number{
+ font-size: 15px;
+ font-weight: bold;
+ text-align: right;
+  padding: 12px 16px;
+}
+.txt_area{
+
+border: 1px solid #ccc;
+padding: 30px;
+} 
+
+/* sec03 */
+.section03 .chart_inner{
+
+  display: flex;
+  justify-content: space-between;
+}
+.section03 .chart-wrap{
+  width: 100%;
+
+}
+.section03 .total-wrap .number{
+ font-size: 15px;
+ font-weight: bold;
+ text-align: right;
+  padding: 12px 16px;
+}
+
+/* sec06 */
+.section06 .chart_inner{
+
+  display: flex;
+  justify-content: space-between;
+}
+.section06 .chart-wrap{
+  width: 100%;
+
+}
+.section06 .total-wrap .number{
+ font-size: 15px;
+ font-weight: bold;
+ text-align: right;
+  padding: 12px 16px;
+}
+/* sec07 */
+.section07 .table-inner{
+  width: 49.5%;;
+}
+.section07 .table-wrap {
+  display: flex;
+  justify-content: space-between;
+  /* display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px; */
+}
+
+.section07 .total-wrap {
+  display: flex;
+  justify-content: left;
+  width: 49.5%;}
+
+.section07 .total-wrap .title {
+  font-size: 16px;
+  color: white;
+  background-color:#5e9ac8;
+  padding: 14px;
+  text-align: center;
+  width: 50%;
+}
+.section07 .total-wrap .number {
+  border: 1px solid #CCC;
+  font-size: 20px; 
+  font-weight: bold;
+  text-align: right;
+  padding: 12px 16px; width: 50%;
+}
+
+.comment_box {
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  margin-top: 50px;
+  overflow: auto;
+  padding: 30px;
+  background: #fff;
+  width: 94%;
+  border: 1px solid #E8E9EC;
+  resize: none;
+  outline: none;
+  font-size: 16px;
+  font-family: 'NanumSquare', sans-serif;
+  line-height: 26px;
+}

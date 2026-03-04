@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+	<title>ITAM 자산관리</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!--[if lte IE 8 ]>
+	<link rel="stylesheet" type="text/css" href="css/layout_ie8.css" />
+	<script type="text/javascript" src="js/poly-checked.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+	<style type="text/css">
+		.con_tit_st03 {
+			font-size: 18px;
+			color: #000;
+			border-left: 2px solid #dcdcdc;
+			margin-left: 10px;
+			padding-left: 10px;
+		}
+
+		.con_tit_st04 {
+			font-size: 16px;
+			color: #464747;
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+
+		#lnb>ul>li ul {
+			display: none;
+			background: #2B3239;
+		}
+	</style>
+
+
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/jquery-nav.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/sideupdown.js"></script>
+	<!-- <script src="js/accodion.js"></script> -->
+	<script src="js/jquery-autoclear.min.js"></script>
+	<script src="js/jquery-select.js"></script>
+	<script src="js/jquery.tablesorter.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('ul.tab_tit li').click(function () {
+				var tab_id = $(this).attr('data-tab');
+
+				$('ul.tab_tit li').removeClass('current');
+				$('.tab_sub_box').removeClass('current');
+
+				$(this).addClass('current');
+				$("#" + tab_id).addClass('current');
+			});
+
+			$('.modal_body tr').click(function () {
+				var tr = $(".modal_body tr").index(this);
+
+				var divCode = $(".modal_body tr:eq(" + tr + ") td:eq(0)").text();
+				var divName = $(".modal_body tr:eq(" + tr + ") td:eq(1)").text();
+				var subDiv = $(".modal_body tr:eq(" + tr + ") td:eq(2)").text();
+
+				$(".divName").val(divName);
+				$(".subDiv").val(subDiv);
+				$(".divCode").val(divCode);
+
+				fadeClose();
+				//$("#popup1").css("display","block");
+			});
+		});
+
+		$(document).ready(function () {
+			$('.on').each(function () {
+				this.scrollIntoView(true);
+			});
+		});
+
+		$(function () {
+			$('#txt_count01').on('keyup', function () {
+				if ($(this).val().length > 500) {
+					$(this).val($(this).val().substring(0, 500));
+				}
+			});
+
+			$('#txt_count01').keyup(function (e) {
+				var content = $(this).val();
+				$(this).height(((content.split('\n').length + 1) * 1.5) + 'em');
+				$('#counter01').html(content.length + '/500');
+			});
+
+			$('#txt_count01').keyup();
+		});
+
+	</script>
+</head>
+
+<body>
+	<div id="container">
+
+		<!-- Hearder AREA : S -->
+		<div id="header">
+			<div class="header_area">
+				<div class="hd_logo_wrap">
+					<div class="hd_logo" tabindex="-1">
+						<a href="menu_001.html">
+							<span class="ad_logo"><img src="images/logo.png" alt="관리자 로고"></span>
+							<span class="ad_text">IT 자산관리</span>
+						</a>
+					</div>
+				</div>
+				<div class="hd_menu">
+					<div class="hamburger nav-toggle">
+						<a href="#">
+							<span class="screen-reader-text"></span>
+						</a>
+					</div>
+					<div class="brand_text02">
+						드림시큐리티 <span class="con_tit_st03">정보설정</span>
+					</div>
+				</div>
+				<div class="hd_logout">
+					<ul>
+						<li><a href="../service_login.html" tabindex="-1"><i class="la la-power-off"></i>로그아웃</a></li>
+					</ul>
+				</div>
+				<div class="hd_user">
+					<ul>
+						<!-- <li>
+							<a href="" tabindex="-1">
+								<span class="txt_blue" data-tooltip-text="회사명: 드림시큐리티&#10;&#13;담당자: 김고객&#10;&#13;연락처: 010-7789-4406&#10;&#13;이메일: customer@company.co.kr">홍길동</span>
+								님 안녕하세요.
+							</a>
+						</li> -->
+						<li>
+							<span class="txt_blue"
+								data-tooltip-text="회사명: 드림시큐리티&#10;&#13;담당자: 김고객&#10;&#13;연락처: 010-7789-4406&#10;&#13;이메일: customer@company.co.kr">홍길동</span>
+							님 안녕하세요.
+						</li>
+					</ul>
+				</div>
+				<div class="hd_info">
+					<ul>
+						<li><a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">무료이용기간이 30일 남았습니다.</a>
+						</li>
+						<li style="display:none;"><a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">서비스
+								미납중 입니다. 미납기간: 1개월/ 미납금액: 50,000원</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- Hearder AREA : E -->
+
+		<!-- Content AREA : S -->
+		<div id="content">
+			<div id="content_area">
+
+				<!-- nav : S -->
+				<div id="nav_wrap" tabindex="-1">
+					<div id="nav_area">
+						<div class="nav_box">
+
+							<!-- nav -->
+							<div role="navigation" class="menu">
+								<div class="menu_wrap">
+
+									<!-- left nav -->
+									<div id="lnb">
+										<ul>
+											<li>
+												<a href="menu_001.html" tabindex="-1">
+													<span><i class="la la-clipboard"></i></span>
+													<span class="nav_txt">대시보드</span>
+												</a>
+											</li>
+											<li>
+												<a href="menu_002_list.html" tabindex="-1">
+													<span><i class="la la-th-list"></i></span>
+													<span class="nav_txt">할당자산 일괄조회</span>
+												</a>
+											</li>
+											<li class="side_hw">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_003_reg01.html'">등록</button></span>
+												<a href="#" tabindex="-1">
+													<span><i class="la la-laptop"></i></span>
+													<span class="nav_txt">하드웨어(H/W)</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li><a href="menu_003_list01.html" tabindex="-1">노트북</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">데스크톱</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">모니터</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">서버</a></li>
+													<li><a href="menu_003_list02.html" tabindex="-1">네트웍장비</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">모바일기기</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">사무기기</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">기타장비</a></li>
+												</ul>
+											</li>
+											<li class="side_sw">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_004_reg.html'">등록</button></span>
+												<a href="menu_004_list.html" tabindex="-1">
+													<span><i class="la la-terminal"></i></span>
+													<span class="nav_txt">소프트웨어(S/W)</span>
+												</a>
+											</li>
+											<li class="side_etc">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_005_reg.html'">등록</button></span>
+												<a href="#" tabindex="-1">
+													<span><i class="la la-info-circle"></i></span>
+													<span class="nav_txt">기타IT관리정보</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li class="side_btn_box">
+														<!-- <span class="side_btn02"><button type="button" onclick="location.href='menu_005_set.html'">설정</button></span> -->
+														<a href="menu_005_list01.html" tabindex="-1">IP사용현황</a>
+													</li>
+													<li><a href="menu_005_list02.html" tabindex="-1">도메인</a></li>
+												</ul>
+											</li>
+											<li class="side_option on">
+												<a href="#" tabindex="-1">
+													<span><i class="la la-cog"></i></span>
+													<span class="nav_txt">환경설정</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li><a href="menu_006_list02.html" tabindex="-1">부서설정</a></li>
+													<li><a href="menu_006_list03.html" tabindex="-1">인사정보설정</a></li>
+													<li><a href="menu_005_set.html" tabindex="-1">IP대역설정</a></li>
+													<li><a href="menu_006_list01.html" tabindex="-1">자산일괄등록</a></li>
+													<li class="on"><a href="menu_006_modi04.html" tabindex="-1">정보설정</a>
+													</li>
+													<!-- <li><a href="" tabindex="-1">라벨등록양식설정</a></li> -->
+												</ul>
+											</li>
+										</ul>
+									</div>
+									<!-- //left nav -->
+
+								</div>
+							</div>
+							<!-- //nav -->
+
+						</div>
+					</div>
+				</div>
+				<!-- nav : E -->
+
+				<!-- Content : S -->
+				<div id="con_wrap">
+					<div id="con_area">
+						<div class="con_box">
+							<!-- Tab : S -->
+							<div class="con_tit_wrap tab_box">
+								<ul class="tab_tit">
+									<li class="current" data-tab="tab-1">이용정보</li>
+									<li data-tab="tab-2">정보수정</li>
+									<li data-tab="tab-3">비밀번호 변경</li>
+								</ul>
+							</div>
+							<!-- Tab : E -->
+
+							<div id="tab-1" class="tab_sub_box current">
+								<!-- Content_table : S -->
+								<div class="con_sub_wrap">
+									<div class="con_sub_all_box">
+
+										<div class="con_tb_area">
+											<div class="con_menu_tb_wrap">
+												<div class="table_wrap">
+													<table id="tableData" class="dt_tbl">
+														<colgroup>
+															<col style="width:12%;">
+															<col style="width:14%;">
+															<col style="width:14%;">
+															<col style="width:20%;">
+															<col style="width:20%;">
+															<col style="width:20%;">
+														</colgroup>
+														<thead>
+															<tr>
+																<th>이용 중인 상품</th>
+																<th>시작일</th>
+																<th>종료일</th>
+																<th>현재 사용 중인 User 수</th>
+																<th>현재 운용 중인 자산 수(HW/SW)</th>
+																<th>가격(원/월, VAT 제외)</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td><span class="txt_bold">Trial</span></td>
+																<td>2021. 04. 15</td>
+																<td>2021. 07. 14</td>
+																<td>96명</td>
+																<td>361 (270/91)</td>
+																<td>무료 ( <span class="txt_red">83일</span> / 90일 )</td>
+															</tr>
+															<tr style="display:none;">
+																<td><span class="txt_bold">Business</span></td>
+																<td>2021. 07. 01</td>
+																<td>2021. 08. 01</td>
+																<td>96명</td>
+																<td>361 (270/91)</td>
+																<td><span class="txt_bold">30,000원</span></td>
+															</tr>
+														</tbody>
+													</table>
+
+												</div>
+
+
+											</div>
+										</div>
+										<style>
+											.con_sub_tit {
+												width: 100%;
+											}
+
+											.con_sub_tit .recom {
+												font-size: 18px;
+												margin: 0 auto;
+												padding: 2% 0;
+
+											}
+										</style>
+										<div class="con_sub_tit">
+											<p class="recom"><span class="badge"></span>(주)Customer.inc 고객님께
+												추천하는 상품은 <span class="txt_red ">Business</span>입니다.</p>
+										</div>
+
+										<div class="ser_info_box">
+											<p>
+												<i class="la la-info-circle"></i>사용 User 수와 자산의 규모에 따라 <span
+													class="txt_blue">아래와 같은 상품으로 변경</span> 하실 수
+												있습니다.
+											</p>
+											<div class="con_tb_area">
+												<div class="ser_tb_wrap">
+													<table class="dt_tbl06">
+														<colgroup>
+															<col style="width:10%;">
+															<col style="width:15%;">
+															<col style="width:20%;">
+															<col style="width:15%;">
+															<col style="width:20%;">
+															<col style="width:20%;">
+														</colgroup>
+														<thead>
+															<tr>
+																<th>선택</th>
+																<th>상품명</th>
+																<th>이용자 수</th>
+																<th>운용 자산 수</th>
+																<th>가격 (월, VAT제외)</th>
+																<th>신청서</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr class="bg_gry">
+																<td class=""><input type="radio" id="1" name="chk_ser"
+																		value="1" /><label for="1"><span></span></label>
+																</td>
+																<td class="txt_bold">Office</td>
+																<td>1~60명</td>
+																<td>~250개</td>
+																<td>10,000원</td>
+																<td><a href="#"><i class="la la-download"></i>다운로드</a>
+																</td>
+															</tr>
+															<tr>
+																<td class=""><input type="radio" id="2" name="chk_ser"
+																		value="2" checked /><label
+																		for="2"><span></span></label></td>
+																<td class="txt_bold">Business</td>
+																<td>61~100명</td>
+																<td>~400개</td>
+																<td>30,000원</td>
+																<td class="txt_blue"><i
+																		class="la la-check-circle"></i>이용중</td>
+															</tr>
+															<tr class="bg_gry">
+																<td class=""><input type="radio" id="3" name="chk_ser"
+																		value="3" /><label for="3"><span></span></label>
+																</td>
+																<td class="txt_bold">Business+</td>
+																<td>제한없음</td>
+																<td>제한없음</td>
+																<td>50,000원</td>
+																<td><a href="#"><i class="la la-download"></i>다운로드</a>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<!-- <div class="upload_box">
+																										<table class="dt_tbl05">
+																											<colgroup>
+																												<col style="width:22%;">
+																												<col style="width:78%;">
+																											</colgroup>
+																											<tbody>
+																												<tr>
+																													<td>
+																														상품구독 신청양식
+																													</td>	
+																													<td>
+																														<div class="filebox bs3-primary">
+																															<input class="upload-name width_70p input_dis" disabled="disabled">
+																															<label tabindex="6" for="ex_filename" class="width_28p float_r">업로드</label> 
+																															<input type="file" id="ex_filename" class="upload-hidden"> 
+																														</div>
+																													</td>	
+																												</tr>
+																												<tr>
+																													<td>
+																														계약서
+																													</td>	
+																													<td>
+																														<div class="filebox bs3-primary">
+																															<input class="upload-name width_70p input_dis" disabled="disabled">
+																															<label tabindex="6" for="ex_filename" class="width_28p float_r">업로드</label> 
+																															<input type="file" id="ex_filename" class="upload-hidden"> 
+																														</div>
+																													</td>	
+																												</tr>
+																											</tbody>
+																										</table>
+																									</div> -->
+											<div class="sub_info_box">
+												<span class="txt_red">※ 선택하신 상품으로 전자계약을 진행합니다.
+												</span>
+												<span class="txt_red">※ 상품변경 신청을 하시면 영업일 기준(공휴일 제외) 1~2일 이내에 변경완료 메일
+													발송과 함께 변경한 서비스로 적용해드립니다.</span><span class="txt_red">※ 상품변경이 완료되면
+													계약내용에 기준하여 변경완료 메일과
+													함께 변경한 서비스로 적용해드립니다.
+													발송과 함께 변경한 서비스로 적용해드립니다.</span>
+
+												<span class="txt_bold">※ 기타 서비스 문의는 이메일 itam@dreamsecurity.com으로 문의
+													해주세요.</span>
+											</div>
+										</div>
+
+										<!-- 버튼 -->
+										<div class="con_sub_btn_box03">
+											<span>
+												<a href="#"><button tabindex="18"
+														class="width_120 btn_blu02 btn_confirm">상품변경신청</button></a>
+											</span>
+										</div>
+										<!-- //버튼 -->
+
+									</div>
+								</div>
+								<!-- Content_table : E -->
+
+
+							</div>
+
+							<div id="tab-2" class="tab_sub_box">
+								<!-- Content_table : S -->
+								<div class="con_sub_wrap">
+									<div class="con_sub_all_box">
+										<div class="con_sub_tit_wrap">
+											<div class="con_sub_tit">회사정보</div>
+										</div>
+										<div class="con_tb_area">
+											<div class="con_menu_tb_wrap">
+												<div class="table_wrap">
+													<table class="dt_tbl05">
+														<colgroup>
+															<col style="width:50%;">
+															<col style="width:50%;">
+														</colgroup>
+														<tbody>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th"><span
+																			class="badge"></span>회사명 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="cpName"
+																			class="width_100p input_txt"
+																			value="(주)dreamsecu" tabindex="1"
+																			readonly />
+																	</span>
+																</td>
+																<td>
+																	<span class="dt_tbl_col_th"><span
+																			class="badge"></span>대표자 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="cpName"
+																			class="width_100p input_txt"
+																			value="(주)dreamsecu" tabindex="2"
+																			readonly />
+																	</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th"><span
+																			class="badge"></span>사업자등록번호 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="cpRegNum"
+																			class="width_100p input_txt" min="0"
+																			placeholder="-없이 입력해주세요" value="1078822434"
+																			tabindex="3" readonly />
+																	</span>
+																	<span class="txt_info">
+																		※ 등록하신 사업자등록번호는 이미 등록되어 있는 번호입니다.
+																	</span>
+																</td>
+																<td>
+																	<span class="dt_tbl_col_th">팩스번호 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="fax"
+																			class="width_100p input_txt" min="0"
+																			tabindex="4" placeholder="-없이 입력해주세요"
+																			value="021112222" />
+																	</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th">사업자등록증 :</span>
+																	<span class="dt_tbl_col_con">
+																		<div class="filebox bs3-primary">
+																			<input
+																				class="upload-name width_70p input_dis"
+																				disabled="disabled">
+																			<label tabindex="5" for="ex_filename"
+																				class="width_28p float_r">업로드</label>
+																			<input type="file" id="ex_filename"
+																				class="upload-hidden">
+																		</div>
+																	</span>
+																</td>
+																<td>
+																	<span class="dt_tbl_col_th">법인인감증명서 :</span>
+																	<span class="dt_tbl_col_con">
+																		<div class="filebox bs3-primary">
+																			<input
+																				class="upload-name width_70p input_dis"
+																				disabled="disabled">
+																			<label tabindex="6" for="ex_filename"
+																				class="width_28p float_r">업로드</label>
+																			<input type="file" id="ex_filename"
+																				class="upload-hidden">
+																		</div>
+																	</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th"><span
+																			class="badge"></span>담당자명 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="psName"
+																			class="width_100p input_txt" tabindex="7"
+																			value="홍담당" />
+																	</span>
+																</td>
+																<td rowspan="3">
+																	<span class="dt_tbl_col_th">회사 주소 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="adress_num"
+																			class="width_70p input_txt input_dis"
+																			placeholder="우편번호" tabindex="-1" readonly />
+																		<button
+																			class="btn_grey_mn width_28p float_r margin_B10"
+																			tabindex="8">우편번호
+																			찾기</button>
+																		<input type="text" name="adress"
+																			class="width_100p input_txt margin_B10 input_dis"
+																			placeholder="주소" tabindex="-1" readonly />
+																		<input type="text" name="adress"
+																			class="width_50p input_txt margin_B10"
+																			tabindex="9" placeholder="상세주소" />
+																		<input type="text" name="adress"
+																			class="width_48p float_r input_txt margin_B10"
+																			tabindex="10" placeholder="참고항목" />
+																	</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th"><span
+																			class="badge"></span>연락처 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="phNum"
+																			class="width_100p input_txt" min="0"
+																			tabindex="11" placeholder="-없이 입력해주세요"
+																			value="021112222" />
+																	</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th">아이디 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="cpId"
+																			class="width_100p input_txt divCode input_dis"
+																			value="dreamsecu" tabindex="-1" readonly />
+																	</span>
+																</td>
+															</tr>
+															<tr>
+																<td>
+																	<span class="dt_tbl_col_th">이메일 주소 :</span>
+																	<span class="dt_tbl_col_con">
+																		<input type="text" name="email"
+																			class="width_30p input_txt" tabindex="12"
+																			value="" />
+																		<span class="e_sign">@</span>
+																		<input type="text" name="email"
+																			class="width_30p input_txt" tabindex="13"
+																			value="" />
+																		<span class="width_30p float_r" tabindex="14">
+																			<select name="e-adress" class="select"
+																				id="e-adress" tabindex="15">
+																				<option value="e_adress00">선택하세요
+																				</option>
+																				<option value="e_adress01">naver.com
+																				</option>
+																				<option value="e_adress02">daum.net
+																				</option>
+																				<option value="e_adress03">gmail.com
+																				</option>
+																				<option value="e_adress04">nate.com
+																				</option>
+																				<option value="e_adress05">직접입력</option>
+																			</select>
+																		</span>
+																	</span>
+																</td>
+																<td></td>
+															</tr>
+															<tr>
+																<td colspan="2">
+																	<span class="dt_tbl_col_th">요청사항 :</span>
+																	<span class="dt_tbl_col_con">
+																		<textarea tabindex="16" id="txt_count01"
+																			class="width_100p textarea h_160"
+																			name="txt_count">자산규모가 무형자산 약 100개 유형자산 200개 사용가능 유동 공용자산 30% 회사 내부 품의 후 유료전환 예정입니다. </textarea>
+																		<div id="counter01" class="txt_count_st">0 /500자
+																		</div>
+																	</span>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+
+										<!-- 버튼 -->
+										<div class="con_sub_btn_box03">
+											<span>
+												<a href="#" data-modal-id="popup1"><button tabindex="17"
+														class="width_100 btn_blu02">저장</button></a>
+											</span>
+										</div>
+										<!-- //버튼 -->
+
+									</div>
+								</div>
+								<!-- Content_table : E -->
+
+
+
+							</div>
+							<div id="tab-3" class="tab_sub_box">
+								<!-- Content_table : S -->
+								<div class="con_sub_wrap">
+									<div class="con_sub_all_box">
+										<div class="con_sub_tit_wrap">
+											<div class="con_sub_tit">비밀번호 변경</div>
+										</div>
+										<div class="con_tb_area">
+											<div class="con_menu_tb_wrap">
+												<div class="table_wrap">
+													<table class="dt_tbl03 dt_tbl_left02">
+														<colgroup>
+															<col style="width:150px;">
+															<col style="width:calc(100%-150px);">
+														</colgroup>
+														<tr>
+															<td class="dt_tbl_col_th">현재 비밀번호 :</td>
+															<td>
+																<input tabindex="12" type="password" minlength="8"
+																	maxlength="20" class="width_100p input_txt" />
+															</td>
+														</tr>
+														<tr>
+															<td class="dt_tbl_col_th">변경 비밀번호 :</td>
+															<td>
+																<input tabindex="13" type="password" minlength="8"
+																	maxlength="20" class="width_100p input_txt" />
+															</td>
+														</tr>
+														<tr class="tb_sub_ex">
+															<td></td>
+															<td><span style="font-size:13px; color:#DF696C;">※ 8자리~20자리,
+																	영문, 숫자, 특수문자 (가능 : !@#$%^&*)</span></td>
+														</tr>
+														<tr>
+															<td class="dt_tbl_col_th">비밀번호 확인 :</td>
+															<td>
+																<input tabindex="14" type="password" minlength="8"
+																	maxlength="20" class="width_100p input_txt" />
+															</td>
+														</tr>
+														<tr class="tb_sub_ex">
+															<td></td>
+															<td><span style="font-size:13px; color:#DF696C;">비밀번호가 일치하지
+																	않습니다.</span></td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+
+										<!-- 버튼 -->
+										<div class="con_sub_btn_box02">
+											<span>
+												<a href="#" data-modal-id="popup5"><button tabindex="15"
+														class="width_100 btn_blu02">저장</button></a>
+											</span>
+										</div>
+										<!-- //버튼 -->
+
+									</div>
+								</div>
+								<!-- Content_table : E -->
+							</div>
+
+							<!-- 버튼 -->
+							<!--
+							<div class="con_sub_btn_box">
+								<span>
+									<a href="#" data-modal-id="popup2"><button class="width_120 btn_blu_line">팝업_동일사번</button></a>
+								</span>	
+								<span>
+									<a href="#" data-modal-id="popup3"><button class="width_120 btn_blu_line">팝업_성공</button></a>
+								</span>	
+								<span>
+									<a href="#" data-modal-id="popup4"><button class="width_120 btn_blu">팝업_필수입력</button></a>
+								</span>																			
+							</div>-->
+							<!-- //버튼 -->
+						</div>
+					</div>
+				</div>
+				<!-- Content : E -->
+
+			</div>
+		</div>
+		<!-- Content AREA : E -->
+
+	</div>
+
+	<!-- layer start -->
+	<!--
+		popup 1 : 계약진행과정 레이어
+	-->
+
+	<!-- alert01 : S -->
+	<div id="popup1" class="modal-box">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">회사정보 수정</p>
+		</div>
+		<div class="modal_body">
+			<div style="padding:1.2em 0;">
+				회사정보가 성공적으로 수정되었습니다.
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap">
+					<span class="pop_btn_one"><a href="menu_006_modi04.html"
+							class="pop_btn_grey js-modal-close">확인</a></span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	<!-- alert01 : E -->
+
+
+	<!-- alert03 : S -->
+	<div id="popup3" class="modal-box">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">이용서비스 변경</p>
+		</div>
+		<div class="modal_body">
+			<div>
+				선택하신 서비스로 변경할 수 없습니다.
+
+				<div class="check_info_box">
+					<table class="dt_tbl05">
+						<colgroup>
+							<col style="width:22%;">
+							<col style="width:78%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>
+									신청서비스
+								</td>
+								<td>
+									<span class="txt_bold">Business</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="pop_sub_txt">
+					<span class="pop_qa_txt"><span class="txt_red">현재 이용자 수 또는 운 용중인 자산 수가<br />선택하신 상품의 범위를
+							초과합니다.</span><br />이용자 수 또는 운용 중인 자산 수를 조정하시고<br />다시 시도 하세요.</span>
+				</div>
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap">
+					<span class="pop_btn_one"><a href="menu_006_modi04.html"
+							class="pop_btn_grey js-modal-close">확인</a></span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	<!-- alert03 : E -->
+
+	<!-- alert04 : S -->
+	<div id="popup4" class="modal-box">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit"></p>
+		</div>
+		<div class="modal_body">
+			<i class="la la-info-circle" style="color:#00a54d;font-size:30px;"></i>
+			<div>
+				상품변경을 신청 하시겠습니까?
+
+				<div class="form_txt">
+					<p>
+						<span class="popup_tit">신청상품 </span>
+						<span class="txt_blue popup_txt">Buisness(User수 100명, 운용자산 수 400개)</span>
+
+					</p>
+					<p>
+						<span class="popup_tit">신청일 </span>
+						<span class="popup_txt">2021년 4월 21일</span>
+
+					</p>
+					<p>
+						<span class="popup_tit">담당자이름 </span>
+						<span class="popup_txt">홍담당</span>
+
+					</p>
+					<p>
+						<span class="popup_tit">이메일 </span>
+						<span class="popup_txt">hong_admin@customer.com</span>
+
+					</p>
+					<p>
+						<span class="popup_tit">연락처 </span>
+						<span class="popup_txt">010-1234-5678</span>
+
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap">
+					<span class="pop_btn_two">
+						<a href="menu_006_modi04.html" class="pop_btn_blu width_100">확인</a>
+						<a href="menu_006_modi04.html" class="pop_btn_grey width_100 js-modal-close">취소</a>
+					</span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	<!-- alert04 : E -->
+
+	<!-- alert06 : S -->
+
+	<script>
+		$(function () {
+
+			$(document).on("click", "#confirm", function () {
+				action_popup.confirm("hello world confirm test !!!", function (res) {
+					if (res) {
+						action_popup.alert("확인창을 눌렀습니다.");
+					}
+				})
+			});
+
+			$(document).on("click", "#alert", function () {
+				action_popup.alert("경고창 테스트!!!");
+			});
+
+			$(".modal_close").on("click", function () {
+				action_popup.close(this);
+			});
+
+		});
+	</script>
+	<!-- alert06 : E -->
+
+	<!-- alert 전자계약 -->
+	<div class="modal-box pop_cont">
+		<div class="modal_header">
+			<a class="pop_cont_close">
+				<i class="la la-close"></i>
+			</a>
+			<p class="modal_tit">알림</p>
+		</div>
+		<ul>
+			<li class="popup6">
+				<div class="modal_body">
+					<i class="la la-info-circle" style="color:#00a54d;font-size:30px;"></i>
+					<div>
+						<p class="pop_ti">상품을 신청을 위해 아래 정보를 확인해주세요<br>
+
+
+							신청상품 :
+							<span class="txt_blue">Buisness(User수 100명,운용자산 수 400개)</span>
+						</p>
+
+						<div class="form_txt">
+							<p>
+								<span class="popup_tit">담당자 이름</span>
+								<input type="text" maxlength="5" name="username" placeholder="홍담당">
+							</p>
+							<p>
+								<span class="popup_tit">이메일</span>
+								<input type="email" maxlength="15" name="username"
+									placeholder="hong_admin@customer.com">
+							</p>
+							<p>
+								<span class="popup_tit">연락처</span>
+								<input type="text" maxlength="15" name="username" placeholder="010-1234-5678">
+							</p>
+						</div>
+						<!-- 신청정보 확인값 // 추가 //값에 따라 바꾸면됩니다. -->
+						<div class="txt_error txt_red">※입력 항목을 확인해주세요</div>
+
+
+						<div style="text-align: left; padding: 10px 0;">
+							<p>※상품계약을 위한 정보이므로 실제 연락이 가능한 정보를 입력해 주세요.</p>
+							<p>※상품변경신청을 하시면 영업일 기준(공휴일 제외)1~2일 이내에 계약 진행에
+							<p style="margin-left:14px;">대한 연락을 드립니다.</p>
+							<p>※서비스 문의 : itam@dreamsecurity.com</p>
+						</div>
+					</div>
+				</div>
+				<div class="modal_footer">
+					<div class="modal_footer_box">
+						<!-- 버튼 -->
+						<div class="pop_btn_wrap">
+							<span class="pop_btn_two">
+								<div class="pop_btn_blu width_100 btn_next">확인</div>
+								<div class="pop_btn_grey width_100 pop_btn_close">취소</div>
+							</span>
+						</div>
+						<!-- //버튼 -->
+					</div>
+				</div>
+			</li>
+			<!-- popup6:end -->
+			<li class="popup7">
+				<div class="modal_body">
+					<i class="la la-check-circle" style="color:#0882d6;font-size:30px;"></i>
+					<div>
+						<p class="pop_ti">상품변경을 신청 하시겠습니까?</p>
+
+						<div class="form_txt"><br>
+							<p>
+								<span class="popup_tit">신청상품 </span>
+								<span class="txt_blue popup_txt">Buisness(User수 100명, 운용자산 수 400개)</span>
+
+							</p>
+							<p>
+								<span class="popup_tit">신청일 </span>
+								<span class="popup_txt">2021년 4월 21일</span>
+
+							</p>
+							<p>
+								<span class="popup_tit">담당자 이름 </span>
+								<span class="popup_txt">홍담당</span>
+
+							</p>
+							<p>
+								<span class="popup_tit">이메일 </span>
+								<span class="popup_txt">hong_admin@customer.com</span>
+
+							</p>
+							<p>
+								<span class="popup_tit">연락처 </span>
+								<span class="popup_txt">010-1234-5678</span>
+
+							</p>
+							<br>
+							<p>
+								※영업일 기준 (공휴일 제외) 1~2이내에 계약 진행에 대한 연락을 드리겠습니다.<br>
+								※서비스 문의E-mal: itam@dreamsecurity.com
+							</p>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="modal_footer">
+					<div class="modal_footer_box">
+						<!-- 버튼 -->
+						<div class="pop_btn_wrap">
+							<span class="pop_btn_two">
+								<div class="pop_btn_blu width_100 btn_next">확인</div>
+								<div class="pop_btn_grey width_100 pop_btn_close">취소</div>
+
+							</span>
+						</div>
+						<!-- //버튼 -->
+					</div>
+				</div>
+			</li><!-- alert07 : E -->
+
+			<!-- alert08: S -->
+			<li class="popup8">
+				<div class="modal_body">
+					<i class="la la-check-circle" style="color:#0882d6;font-size:30px;"></i>
+					<div>
+						<p class="pop_ti">상품변경이 신청 되었습니다.</p>
+						<div class="form_txt">
+							<p>
+								<span class="popup_tit">신청상품 </span>
+								<span class="txt_blue popup_txt">Buisness(User수 100명, 운용자산 수 400개)</span>
+
+							</p>
+							<p>
+								<span class="popup_tit">신청일 </span>
+								<span class="popup_txt">2021년 4월 21일</span>
+
+							</p>
+							<br>
+							<p>
+								※영업일 기준 (공휴일 제외) 1~2이내에 계약 진행에 대한 연락을 드리겠습니다.<br>
+								※서비스 문의E-mal: itam@dreamsecurity.com
+							</p>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="modal_footer">
+					<div class="modal_footer_box">
+						<!-- 버튼 -->
+						<div class="pop_btn_wrap">
+							<span class="pop_btn_two">
+								<a class="pop_btn_blu width_100 pop_btn_close" href="./menu_006_modi04_01.html">확인</a>
+
+							</span>
+						</div>
+						<!-- //버튼 -->
+					</div>
+				</div>
+			</li><!-- alert08 : E -->
+		</ul>
+
+	</div><!-- 전자계약 popup:E -->
+
+
+	<div class="pop_cont_bg"></div>
+
+
+
+</body>
+
+</html>

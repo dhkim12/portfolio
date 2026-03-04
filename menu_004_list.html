@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+	<title>ITAM 자산관리</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!--[if lte IE 8 ]>
+	<link rel="stylesheet" type="text/css" href="css/layout_ie8.css" />
+	<script type="text/javascript" src="js/poly-checked.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+	<style type="text/css">
+		#sch_Btn,
+		.btn_user_modify {
+			cursor: pointer;
+		}
+
+		.con_tit_st03 {
+			font-size: 18px;
+			color: #000;
+			border-left: 2px solid #dcdcdc;
+			margin-left: 10px;
+			padding-left: 10px;
+		}
+
+		div.con_search_area {
+			margin-top: 10px;
+		}
+
+		#popup3 .dt_tbl02 tr {
+			cursor: default;
+		}
+
+		#popup5 span.input_hide {
+			display: none;
+		}
+
+		.tbl_sw_list thead tr,
+		.tbl_sw_list thead tr th,
+		.tbl_sw_list tbody tr,
+		.tbl_sw_list tbody tr td {
+			height: 50px;
+		}
+
+		#tableData tr,
+		#tableData tr a {
+			cursor: default;
+		}
+
+		#tableData .txt_line a {
+			cursor: pointer;
+		}
+
+		#lnb>ul>li ul {
+			display: none;
+			background: #2B3239;
+		}
+	</style>
+
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/jquery-nav.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/sideupdown.js"></script>
+	<!-- <script src="js/accodion.js"></script> -->
+	<script src="js/jquery-autoclear.min.js"></script>
+	<script src="js/jquery-select.js"></script>
+	<script src="js/jquery.tablesorter.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+
+	<script type="text/javascript">
+		function s2ab(s) {
+			var buf = new ArrayBuffer(s.length);			// convert s to arrayBuffer
+			var view = new Uint8Array(buf);					// create uint8array as viewer
+
+			for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; 	// convert to octet
+
+			return buf;
+		}
+
+		function exportExcel(excelFileName, tableId) {
+			// step 1. workbook 생성
+			var wb = XLSX.utils.book_new();
+
+			// step 2. 시트 만들기 
+			//		var newWorksheet = excelHandler.getWorksheet();
+			var newWorksheet = excelHandler.getWorksheet(tableId);
+
+			// step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.  
+			XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler.getSheetName());
+
+			// step 4. 엑셀 파일 만들기 
+			var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+			// step 5. 엑셀 파일 내보내기 
+			//		saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelHandler.getExcelFileName());
+			saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), excelHandler.getExcelFileName(excelFileName));
+		}
+
+		$(document).ready(function () {
+			$("#excelFileExport").click(function () {
+				exportExcel('소프트웨어 목록', 'tableData');
+			});
+
+			$("#excelFileExport2").click(function () {
+				exportExcel('소프트웨어 사용자 목록', 'tableData2');
+			});
+		});
+
+		var excelHandler = {
+			getExcelFileName: function (excelFileName) {
+				return excelFileName + '.xlsx';
+			},
+			getSheetName: function () {
+				return '목록';
+			},
+			getExcelData: function (tableId) {
+				return document.getElementById(tableId);
+			},
+			getWorksheet: function (tableId) {
+				return XLSX.utils.table_to_sheet(this.getExcelData(tableId));
+			}
+		}
+
+		$(document).ready(function () {
+			$("#sch_Btn").click(function () {
+				if ($("#sch_Wrap").is(":visible")) {
+					$("#sch_Btn").toggleClass("sch_ex_icon sch_reduce_icon");
+					$("#sch_Wrap").slideUp();
+				} else {
+					$("#sch_Btn").toggleClass("sch_reduce_icon sch_ex_icon");
+					$("#sch_Wrap").slideDown();
+				}
+			});
+		});
+
+		$(document).ready(function () {
+			// 삭제 버튼 클릭 시
+			$(".btn_red_mn").click(function () {
+				popLayerMulti('chk_sw_item', 1, 0, '');
+			});
+
+			// 상세보기 버튼 클릭 시
+			$(".btn_detail_info").click(function () {
+				popLayerOne('chk_sw_item', 0, 1, '');
+			});
+
+			// 지급현황확인 버튼 클릭 시
+			$(".btn_prov_info").click(function () {
+				popLayerOne('chk_sw_item', 1, 3, 'MS_오피스');
+			});
+
+			// 지급정보수정 버튼 클릭 시
+			$(".btn_user_modify").click(function () {
+				popLayerOne('chk_sw_user', 2, 3, '');
+			});
+
+			// 사용자 목록 팝업 닫기 후 체크박스 초기화 
+			$(".user_modify_close").click(function () {
+				$("input[name=chk_sw_user]").prop("checked", false);
+			});
+
+			// 삭제 레이어에서 삭제 버튼 클릭시
+			$(".btn_delete").click(function () {
+				$("input[name=chk_all]").prop("checked", false);
+				$("input[name=chk_sw_item]").prop("checked", false);
+
+				$("#popup1").css("display", "none");
+				fade('popup13');
+			});
+		});
+
+		$(document).ready(function () {
+			$("#select_target").change(function () {
+				if ($("#select_target option:selected").val() == "tg_info03") {
+					$("#target_box").removeClass("input_hide");
+				} else {
+					$("#target_box").addClass("input_hide");
+				}
+			});
+		});
+
+		// 목록 조회 전체 체크박스 선택
+		function allChk() {
+			if ($("#chk_all").is(':checked')) {
+				$("input[name=chk_sw_item]").prop("checked", true);
+			} else {
+				$("input[name=chk_sw_item]").prop("checked", false);
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<div id="container">
+
+		<!-- Hearder AREA : S -->
+		<div id="header">
+			<div class="header_area">
+				<div class="hd_logo_wrap">
+					<div class="hd_logo" tabindex="-1">
+						<a href="menu_001.html">
+							<span class="ad_logo"><img src="images/logo.png" alt="관리자 로고"></span>
+							<span class="ad_text">IT 자산관리</span>
+						</a>
+					</div>
+				</div>
+				<div class="hd_menu">
+					<div class="hamburger nav-toggle">
+						<a href="#">
+							<span class="screen-reader-text"></span>
+						</a>
+					</div>
+					<div class="brand_text02">
+						드림시큐리티 <span class="con_tit_st03">소프트웨어(S/W)</span>
+					</div>
+				</div>
+				<div class="hd_logout">
+					<ul>
+						<li><a href="../service_login.html" tabindex="-1"><i class="la la-power-off"></i>로그아웃</a></li>
+					</ul>
+				</div>
+				<div class="hd_user">
+					<ul>
+						<!-- <li>
+							<a href="" tabindex="-1">
+								<span class="txt_blue"  data-tooltip-text="회사명: 드림시큐리티&#10;&#13;담당자: 김고객&#10;&#13;연락처: 010-7789-4406&#10;&#13;이메일: customer@company.co.kr">홍길동</span>
+								님 안녕하세요.
+							</a>
+						</li> -->
+						<li>
+							<span class="txt_blue"
+								data-tooltip-text="회사명: 드림시큐리티&#10;&#13;담당자: 김고객&#10;&#13;연락처: 010-7789-4406&#10;&#13;이메일: customer@company.co.kr">홍길동</span>
+							님 안녕하세요.
+						</li>
+					</ul>
+				</div>
+				<div class="hd_info">
+					<ul>
+						<li><a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">무료이용기간이 30일 남았습니다.</a>
+						</li>
+						<li style="display:none;">
+							<a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">서비스 미납중 입니다. 미납기간: 1개월/
+								미납금액: 50,000원</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- Hearder AREA : E -->
+
+		<!-- Content AREA : S -->
+		<div id="content">
+			<div id="content_area">
+
+				<!-- nav : S -->
+				<div id="nav_wrap" tabindex="-1">
+					<div id="nav_area">
+						<div class="nav_box">
+
+							<!-- nav -->
+							<div role="navigation" class="menu">
+								<div class="menu_wrap">
+
+									<!-- left nav -->
+									<div id="lnb">
+										<ul>
+											<li>
+												<a href="menu_001.html" tabindex="-1">
+													<span><i class="la la-clipboard"></i></span>
+													<span class="nav_txt">대시보드</span>
+												</a>
+											</li>
+											<li>
+												<a href="menu_002_list.html" tabindex="-1">
+													<span><i class="la la-th-list"></i></span>
+													<span class="nav_txt">할당자산 일괄조회</span>
+												</a>
+											</li>
+											<li class="side_hw">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_003_reg01.html'">등록</button></span>
+												<a href="#" tabindex="-1">
+													<span><i class="la la-laptop"></i></span>
+													<span class="nav_txt">하드웨어(H/W)</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li><a href="menu_003_list01.html" tabindex="-1">노트북</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">데스크톱</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">모니터</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">서버</a></li>
+													<li><a href="menu_003_list02.html" tabindex="-1">네트웍장비</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">모바일기기</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">사무기기</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">기타장비</a></li>
+												</ul>
+											</li>
+											<li class="side_sw on">
+												<span class="side_btn01 on"><button type="button"
+														onclick="location.href='menu_004_reg.html'">등록</button></span>
+												<a href="menu_004_list.html" tabindex="-1">
+													<span><i class="la la-terminal"></i></span>
+													<span class="nav_txt">소프트웨어(S/W)</span>
+												</a>
+											</li>
+											<li class="side_etc">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_005_reg.html'">등록</button></span>
+												<a href="#" tabindex="-1">
+													<span><i class="la la-info-circle"></i></span>
+													<span class="nav_txt">기타IT관리정보</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li class="side_btn_box">
+														<!-- <span class="side_btn02"><button type="button" onclick="location.href='menu_005_set.html'">설정</button></span> -->
+														<a href="menu_005_list01.html" tabindex="-1">IP사용현황</a>
+													</li>
+													<li><a href="menu_005_list02.html" tabindex="-1">도메인</a></li>
+												</ul>
+											</li>
+											<li class="side_option">
+												<a href="#" tabindex="-1">
+													<span><i class="la la-cog"></i></span>
+													<span class="nav_txt">환경설정</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li><a href="menu_006_list02.html" tabindex="-1">부서설정</a></li>
+													<li><a href="menu_006_list03.html" tabindex="-1">인사정보설정</a></li>
+													<li><a href="menu_005_set.html" tabindex="-1">IP대역설정</a></li>
+													<li><a href="menu_006_list01.html" tabindex="-1">자산일괄등록</a></li>
+													<li><a href="menu_006_modi04.html" tabindex="-1">정보변경</a></li>
+													<!-- <li><a href="" tabindex="-1">라벨등록양식설정</a></li> -->
+												</ul>
+											</li>
+										</ul>
+									</div>
+									<!-- //left nav -->
+
+								</div>
+							</div>
+							<!-- //nav -->
+
+						</div>
+					</div>
+				</div>
+				<!-- nav : E -->
+
+				<!-- Content : S -->
+				<div id="con_wrap">
+					<div id="con_area">
+						<div class="con_box">
+							<!-- <div class="con_tit_wrap">					
+								<span class="con_tit">소프트웨어(S/W)</span>						
+							</div> -->
+
+							<!-- Content_form : S -->
+							<div class="con_search_area">
+								<div class="con_menu_search_wrap03">
+									<div class="con_sub_tit_wrap">
+										<span class="con_sub_tit"><a id="sch_Btn">검색조건<i
+													class="la la-angle-down sch_ex_icon"></i></a></span>
+									</div>
+									<div id="sch_Wrap">
+										<div class="sch_tbl_box_third">
+											<div class="sch_tbl_box width_60p">
+												<span class="sch_tbl_tit width_10p">자산정보 :</span>
+												<span class="width_40p sch_tbl_con">
+													<select name="sw_info" style="width:150px;" class="select"
+														id="sw_info">
+														<option value="sw_info00">전체</option>
+														<option value="sw_info01">제품명</option>
+														<option value="sw_info02">품목</option>
+													</select>
+												</span>
+												<span class="width_50p sch_tbl_con">
+													<input type="text" class="width_100p input_txt" />
+												</span>
+											</div>
+											<div class="sch_tbl_box width_40p">
+												<span class="con_sch_btn">
+													<a href="#"><span class="width_100 btn_blu"><i
+																class="la la-search"></i>조회</span></a>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Content_form : E -->
+
+							<!-- Content_table : S -->
+							<div class="con_sub_wrap">
+								<div class="con_sub_all_box">
+									<div class="con_sub_tit_wrap">
+										<!--  <div class="con_sub_tit">조회결과</div>   -->
+										<div class="con_top_btn_box con_btn_area_float_r">
+											<span>
+												<a href="menu_004_reg.html"><span class="btn_blu_mn"><i
+															class="la la-plus"></i>등록</span></a>
+											</span>
+											<span>
+												<a href="#"><span class="btn_red_mn"><i
+															class="la la-trash"></i>삭제</span></a>
+											</span>
+											<span>
+												<a href="#"><span class="btn_grey_mn02 btn_prov_info"><i
+															class="la la-copy"></i>지급현황확인</span></a>
+											</span>
+											<span>
+												<a href="#"><span class="btn_grey_mn02 btn_detail_info"><i
+															class="la la-copy"></i>상세보기</span></a>
+											</span>
+											<span>
+												<a href="#"><span id="excelFileExport" class="btn_grey_mn02"><i
+															class="la la-download"></i>엑셀다운로드</span></a>
+											</span>
+										</div>
+									</div>
+									<div class="con_tb_area">
+										<div class="con_menu_tb_wrap">
+											<div class="table_wrap pointer_no">
+												<table id="tableData" class="dt_tbl tbl_sw_list">
+													<colgroup>
+														<col style="width:5%;">
+														<col style="width:10%;">
+														<col style="width:10%;">
+														<col style="width:6%;">
+														<col style="width:10%;">
+														<col style="width:10%;">
+														<col style="width:5%;">
+														<col style="width:11%;">
+														<col style="width:11%;">
+														<col style="width:5%;">
+														<col style="width:12%;">
+														<col style="width:5%;">
+														<col style="width:5%;">
+													</colgroup>
+													<thead>
+														<tr>
+															<th>
+																<span class="no_arrow">
+																	<input type="checkbox" id="chk_all" name="chk_all"
+																		value="10" onclick="javascript:allChk();" />
+																	<label for="chk_all"><span></span></label>
+																</span>
+															</th>
+															<th>품목</th>
+															<th>제품명</th>
+															<th>버전</th>
+															<th>라이선스</th>
+															<th>가격</th>
+															<th>지급현황</th>
+															<th>구매일</th>
+															<th>만료일</th>
+															<th>잔여일</th>
+															<th>최근갱신일</th>
+															<th>구매처정보</th>
+															<th>기타메모</th>
+														</tr>
+													</thead>
+													<tbody>
+														<!-- <tr>
+															<td colspan="13" class="txt_center">등록된 자산이 없습니다.</td>
+														</tr> -->
+														<tr>
+															<td><input type="checkbox" id="11" name="chk_sw_item"
+																	value="11" /><label for="11"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>한글</td>
+															<td>2018</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="12" name="chk_sw_item"
+																	value="12"><label for="12" /><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="13" name="chk_sw_item"
+																	value="13" /><label for="13"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="14" name="chk_sw_item"
+																	value="14" /><label for="14"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="15" name="chk_sw_item"
+																	value="15" /><label for="15"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="16" name="chk_sw_item"
+																	value="16" /><label for="16"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="17" name="chk_sw_item"
+																	value="17" /><label for="17"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="18" name="chk_sw_item"
+																	value="18" /><label for="18"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="19" name="chk_sw_item"
+																	value="19" /><label for="19"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" id="20" name="chk_sw_item"
+																	value="20" /><label for="20"><span></span></label>
+															</td>
+															<td>문서편집</td>
+															<td>MS오피스</td>
+															<td>2019</td>
+															<td>구매</td>
+															<td>200,000</td>
+															<td class="txt_line">
+																<a href="#" data-modal-id="popup5">1/2</a>
+															</td>
+															<td>2018.05.05</td>
+															<td>2020.05.31</td>
+															<td>6일</td>
+															<td>2018.05.05</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="업체명 : 한글과컴퓨터&#10;&#13;담당자 이름 : 가나다&#10;&#13;이메일 : dream@dreamsecurity.com&#10;&#13;Tel : 02-1598-7534&#10;&#13;Fax : 168-264-189431&#10;&#13;">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+															<td>
+																<a href="#">
+																	<span class="btn_action"
+																		data-tooltip-text="[20200529][제품명] 추가구입">
+																		<i class="la la-comment"></i>
+																	</span>
+																</a>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="pagenation_area_squar">
+												<span class="con_btn_area_float_l">
+													<span class="total_view_list">Total <span class="txt_blue">46</span>
+														items</span>
+												</span>
+												<div class="pagenation_squar">
+													<ul class="list_page">
+														<li><a href="#" class="btn_tb_back"><i
+																	class="la la-angle-double-left"></i></a></li>
+														<li><a href="#" class="btn_tb_back"><i
+																	class="la la-angle-left"></i></a></li>
+														<li><a href="#" class="active">1</a></li>
+														<li><a href="#">2</a></li>
+														<li><a href="#">3</a></li>
+														<li><a href="#">4</a></li>
+														<li><a href="#">5</a></li>
+														<li><a href="#" class="btn_tb_next"><i
+																	class="la la-angle-right"></i></a></li>
+														<li><a href="#" class="btn_tb_next"><i
+																	class="la la-angle-double-right"></i></a></li>
+													</ul>
+												</div>
+												<span class="con_btn_area_float_r">
+													<span class="tb_num_view">
+														<select name="pn_list" class="select" id="pn">
+															<option value="num10">10</option>
+															<option value="num20">20</option>
+															<option value="num30">30</option>
+														</select>
+													</span>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Content_table : E -->
+
+						</div>
+					</div>
+				</div>
+				<!-- Content : E -->
+
+			</div>
+		</div>
+		<!-- Content AREA : E -->
+
+	</div>
+
+	<!-- layer start -->
+	<!--
+		popup 1 : 계약진행과정 레이어
+		popup 2 : 메시지 레이어
+		popup 3 : 자산 상세보기 레이어
+		popup 4 : 자산 인쇄 레이어
+		popup 5 : 소프트웨어 자산 지급현황 레이어
+	-->
+	<!-- alert01 : S -->
+	<div id="popup1" class="modal-box-al">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">
+				계약진행과정
+				<span><i class="la la-exclamation-circle txt_red"></i>계약을 진행하셔아 무료이용기간이 만료된 이후에도 계속 이용하실수 있습니다.</span>
+			</p>
+		</div>
+		<div class="modal_body pb_0">
+			<div style="padding:1.2em 0 0;">
+				<div class="process_box">
+					<div class="step_box">
+						<img src="images/process01_icon@2x.png" />
+						<div class="step_txt_box">
+							<p class="txt_blue">1. 서류접수</p>
+							<span>사업자등록증사본,<br />법인인감증명서</span>
+						</div>
+					</div>
+					<div class="arrow_box"><i class="la la-angle-right txt_blue"></i></div>
+					<div class="step_box">
+						<img src="images/process02_icon@2x.png" />
+						<div class="step_txt_box">
+							<p class="txt_blue">2. 서류검토</p>
+							<span>추가서류<br />(담당자 요청 시)</span>
+						</div>
+					</div>
+					<div class="arrow_box"><i class="la la-angle-right txt_blue"></i></div>
+					<div class="step_box">
+						<img src="images/process03_icon@2x.png" />
+						<div class="step_txt_box">
+							<p class="txt_blue">3. 계약서 작성</p>
+							<span>계약서,<br />CMS계좌동의서</span>
+						</div>
+					</div>
+					<div class="arrow_box"><i class="la la-angle-right txt_blue"></i></div>
+					<div class="step_box">
+						<img src="images/process04_icon@2x.png" />
+						<div class="step_txt_box">
+							<p class="txt_blue">4. 계약체결</p>
+							<span>계약서 날인</span>
+						</div>
+					</div>
+					<div class="arrow_box"><i class="la la-angle-right txt_blue"></i></div>
+					<div class="step_box">
+						<img src="images/process05_icon@2x.png" />
+						<div class="step_txt_box">
+							<p class="txt_blue">5. 서비스 이용</p>
+							<span>Rental User Portal 계좌정보 (ID/PW)</span>
+						</div>
+					</div>
+				</div>
+				<div class="ser_contact_box">
+					[서비스 문의]
+					<span><i class="la la-phone"></i></span> 02-0000-0000
+					<span><i class="la la-envelope"></i></span> rental@dreamsecurity.com
+					<span><i class="la la-fax"></i></span> 02-000-0001
+				</div>
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap">
+					<span class="pop_btn_one margin_l_100">
+						<a class="pop_btn_blu width_100 js-modal-close">닫기</a>
+					</span>
+					<span class="pop_btn_right">
+						<input type="checkbox" id="02" name="지급상태" value="02"><label for="02"><span tabindex="21"
+								class="js-modal-close"></span></label>오늘 하루 보지않기
+					</span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	<!-- alert01 : E -->
+
+	<!-- alert02 : S -->
+	<div id="popup2" class="modal-box">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit"></p>
+		</div>
+		<div class="modal_body">
+			<div style="padding:1.2em 0;">
+				<div class="modal_content" style="padding:1.2em 0;"></div>
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap select_pop1">
+					<span class="pop_btn_two">
+						<a class="pop_btn_blu width_100 btn_action"></a>
+						<a class="pop_btn_grey width_100 js-modal-close">취소</a>
+					</span>
+				</div>
+				<div class="pop_btn_wrap select_pop2">
+					<span>
+						<a class="pop_btn_grey width_100 js-modal-close">확인</a>
+					</span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	<!-- alert02 : E -->
+
+	<!-- alert03 : S -->
+	<div id="popup3" class="modal-box-al">
+		<div class="modal_header">
+			<p class="modal_tit">소프트웨어(S/W) 자산정보</p>
+		</div>
+		<div class="modal_body">
+			<div>
+				<div class="table_wrap scroll_box02">
+					<table class="dt_tbl04">
+						<colgroup>
+							<col style="width:20%;">
+							<col style="width:30%;">
+							<col style="width:20%;">
+							<col style="width:30%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<td class="dt_tbl_col_th">품목</td>
+								<td>데이터베이스</td>
+								<td class="dt_tbl_col_th">제품명</td>
+								<td>오라클</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">제품 구매일</td>
+								<td>2020/05/25</td>
+								<td class="dt_tbl_col_th">제품버전</td>
+								<td>2010</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">제품 만료일</td>
+								<td>2020/06/05</td>
+								<td class="dt_tbl_col_th">최근 갱신일</td>
+								<td>2020/06/05</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">잔여일</td>
+								<td>365일</td>
+								<td class="dt_tbl_col_th">가격</td>
+								<td>1,200,000</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">라이선스</td>
+								<td colspan="3">구매</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">구매처 정보</td>
+								<td colspan="3"><textarea class="detail_info_box"
+										readonly>업체명:드림시큐리티&#10;담당자 이름:박드림&#10;이메일:dream@dreamsecurity&#10;Tel:02-xxxx-xxxx&#10;Fax:02-xxxx-xxxx</textarea>
+								</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">기타메모</td>
+								<td colspan="3"><textarea class="detail_info_box"
+										readonly>[2020-05-26]행정전자서명 인증시스템 운영지원&#10;[2020-05-27]</textarea></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap">
+					<span class="pop_btn_two">
+						<a class="pop_btn_blu02 width_100" href="menu_004_modi.html">자산수정</a>
+						<a class="pop_btn_blu_line width_100 js-modal-close">닫기</a>
+					</span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	<!-- alert03 : E -->
+
+	<!-- alert05 : S -->
+	<div id="popup5" class="modal-box-al" style="display: block;">
+		<div class="modal_header">
+			<a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">소프트웨어 자산 지급현황_MS 오피스</p>
+		</div>
+		<div class="modal_body">
+			<div class="pop_top_btn_wrap">
+				<span class="width_400 txt_left">
+					<!-- <span class="width_80 txt_left"><input type="radio" id="user_sw01" name="user_sw" value="지급"/><label for="user_sw01"><span ></span></label>지급</span> -->
+					<span class="width_100 sch_tbl_con txt_left h_30">
+						<select name="select_target" id="select_target" class="select" style="width:150px;">
+							<option value="tg_info00">전체</option>
+							<option value="tg_info01">미지급</option>
+							<option value="tg_info02">지급전체</option>
+							<option value="tg_info03">지급대상</option>
+						</select>
+					</span>
+					<span class="width_200 sch_tbl_con h_30">
+						<input type="text" class="width_200 input_txt h_30" placeholder="시리얼번호/지급대상/소속" />
+					</span>
+
+					<span id="target_box" class="width_160 sch_tbl_con txt_left input_hide">
+						<input type="text" name="input_target" class="input_txt h_30 input_target" value="" />
+					</span>
+					<!-- <span class="width_100 txt_left">
+						<input type="radio" id="user_sw02" name="user_sw" value="미지급" />
+						<label for="user_sw02"><span></span></label>미지급
+					</span> -->
+					<span class="con_sch_btn02">
+						<a href="#"><span class="width_80 btn_blu h_30">조회</span></a>
+					</span>
+				</span>
+				<span class="pop_top_btn">
+					<span class="btn_user_modify">
+						<span class="btn_grey_mn02"><i class="la la-edit"></i>지급정보수정</span>
+					</span>
+					<span>
+						<a href="#"><span id="excelFileExport2" class="btn_grey_mn02"><i
+									class="la la-download"></i>엑셀다운로드</span></a>
+					</span>
+				</span>
+			</div>
+			<div class="table_wrap scroll_box">
+				<table id="tableData2" class="dt_tbl02">
+					<colgroup>
+						<col style="width:5%;">
+						<col style="width:20%;">
+						<col style="width:40%;">
+						<col style="width:15%;">
+						<col style="width:5%;">
+						<col style="width:5%;">
+						<col style="width:5%;">
+						<col style="width:5%;">
+					</colgroup>
+					<thead>
+						<th>선택</th>
+						<th>버전</th>
+						<th>시리얼번호</th>
+						<th>상태(회수)</th>
+						<th>지급대상</th>
+						<th>지급정보</th>
+						<th>이력메모</th>
+						<th>기타메모</th>
+
+					</thead>
+					<tbody>
+						<tr>
+							<td class="chk_box_center"><input type="checkbox" id="30" name="chk_sw_user"
+									value="30"><label for="30"><span></span></label></td>
+							<td>한글2018</td>
+							<td>FD42E-FEOJFA-E81ZO-FD153-1111-1111-1111</td>
+							<td>지급
+								<a href="#" data-modal-id="popup6">
+									<span class="btn_action">
+										<i class="las la-reply"></i>
+									</span>
+								</a>
+							</td>
+							<td>이성현</td>
+							<td><a href="#">
+									<span class="btn_action" data-tooltip-text="[20200529][지급]홍길동">
+										<i class="la la-comment"></i>
+									</span>
+								</a></td>
+							<td>
+								<a href="#">
+									<span class="btn_action" data-tooltip-text="[20200529][등록]홍길동">
+										<i class="la la-comment"></i>
+									</span>
+								</a>
+							</td>
+							<td>
+								<a href="#">
+									<span class="btn_action" data-tooltip-text="[20200529][기타]홍길동">
+										<i class="la la-comment"></i>
+									</span>
+								</a>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+			<div class="pagenation_area_squar">
+				<div class="pagenation_squar">
+					<ul class="list_page">
+						<li><a href="#" class="btn_tb_back"><i class="la la-angle-double-left"></i></a></li>
+						<li><a href="#" class="btn_tb_back"><i class="la la-angle-left"></i></a></li>
+						<li><a href="#" class="active">1</a></li>
+						<li><a href="#">2</a></li>
+						<li><a href="#">3</a></li>
+						<li><a href="#">4</a></li>
+						<li><a href="#">5</a></li>
+						<li><a href="#" class="btn_tb_next"><i class="la la-angle-right"></i></a></li>
+						<li><a href="#" class="btn_tb_next"><i class="la la-angle-double-right"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- alert05 : E -->
+	<!-- alert06 : S -->
+	<style>
+		#popup6 table {
+
+			display: flex;
+			flex-direction: column;
+			padding: 1% 3%;
+
+		}
+
+		#popup6 tr {
+			padding: 2px 49px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			margin-top: 4px;
+
+
+		}
+
+		#popup6 tr td {
+			text-align: left;
+
+		}
+	</style>
+	<div id="popup6" class="modal-box width_400">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">자산회수</p>
+		</div>
+		<div class="modal_body">
+
+			<div class="modal_content">
+				<table>
+					<tr>
+						<th>자산유형: </th>
+						<td>하드웨어_노트북</td>
+					</tr>
+					<tr>
+						<th>자산코드 :</th>
+						<td>RTNB277</td>
+					</tr>
+					<tr>
+						<th>모델명:</th>
+						<td>15ZB98B</td>
+					</tr>
+					<tr>
+						<th>지급대상:</th>
+						<td>박혜선</td>
+					</tr>
+
+					<tr>자산을 회수하시겠습니까 ?</tr>
+			</div>
+			</table>
+
+		</div>
+
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap select_pop1">
+					<span class="pop_btn_two">
+						<a class="pop_btn_blu width_100 btn_action">확인</a>
+						<a class="pop_btn_grey width_100 js-modal-close">취소</a>
+					</span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+
+	<!-- alert06 : E -->
+</body>
+
+</html>

@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="css/index.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/line-awesome.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <script src="js/jquery-3.5.1.min.js"></script>
+  <script src="js/jquery-1.11.1.min.js"></script>
+  <script src="js/jquery-nav.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sideupdown.js"></script>
+  <!-- <script src="js/accodion.js"></script> -->
+  <script src="js/jquery-autoclear.min.js"></script>
+  <script src="js/jquery-select.js"></script>
+  <script src="js/highcharts.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/jquery.tablesorter.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+  <script>
+
+    //팝업//
+    $(document).ready(function () {
+
+      // 보고서 저장
+      $('#pop1_open').click(function () {
+        $('#popup1').fadeIn();
+        fade('#popup1');
+        $("#popup1").css("display", "block");
+      });
+    });
+    $(document).ready(function () {
+
+      // 보고서 삭제
+      $('#pop2_open').click(function () {
+        $('#popup2').fadeIn();
+        fade('#popup2');
+        $("#popup2").css("display", "block");
+      });
+    });
+
+    //의견삭제
+
+    $(document).ready(function () {
+      $('.red').click(function () {
+        $('#popup4').fadeIn();
+        fade('#popup4');
+        $("#popup4").css("display", "block");
+      });
+    });
+    //글자수제한
+    $(document).ready(function () {
+      $('#comtxt').on('keyup', function () {
+        if ($(this).val().length > 5000) {
+          $(this).val($(this).val().substring(0, 5000));
+        }
+      });
+    });
+
+
+  </script>
+  <title></title>
+</head>
+
+<body>
+  <header>
+    <div class="btn_wrap">
+      <button id="pop1_open" class="l_blue save">보고서 저장</button>
+      <button class="l_blue print">인쇄</button>
+      <button id="pop2_open" class="red reportdel">삭제</button>
+      <button class="l_blue close">닫기</button>
+
+    </div>
+  </header>
+  <!-- popup 01 s -->
+  <div id="popup1" class="modal-box">
+    <div class=" modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+      <p class="modal_tit">알림</p>
+    </div>
+    <div class="modal_body">
+      <div style="padding:1.2em 0;">
+        보고서를 저장했습니다.</div>
+    </div>
+    <div class="modal_footer">
+      <div class="modal_footer_box">
+        <!-- 버튼 -->
+        <div class="pop_btn_wrap">
+          <div class="pop_btn_one">
+            <a href="#" class="pop_btn_blu js-modal-close">확인</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- popup 02 s -->
+  <div id="popup2" class="modal-box">
+    <div class="modal_header">
+      <a><i class="la la-times"></i></a>
+      <p class="modal_tit">알림</p>
+    </div>
+    <div class="modal_body">
+
+      보고서를 삭제하시겠습니까 ?<br>
+      삭제된 보고서는 복구할 수 없습니다.
+
+
+    </div>
+    <div class="modal_footer">
+      <div class="modal_footer_box">
+        <!-- 버튼 -->
+        <div class="pop_btn_wrap">
+          <span class="pop_btn_one">
+            <a href="#" class="pop_btn_blu" data-modal-id="popup3">삭제</a></span>
+        </div>
+        <!-- //버튼 -->
+      </div>
+    </div>
+  </div>
+  <!--popup 02 e-->
+
+  <!-- popup 03 s -->
+  <div id="popup3" class="modal-box">
+    <div class="modal_header">
+      <!-- <a><i class="la la-times"></i></a> -->
+      <p class="modal_tit">알림</p>
+    </div>
+    <div class="modal_body" style="padding: 1.8em 0;">
+
+      보고서가 삭제되었습니다.
+
+
+    </div>
+    <div class="modal_footer">
+      <div class="modal_footer_box">
+        <!-- 버튼 -->
+        <div class="pop_btn_wrap">
+          <span class="pop_btn_one">
+            <a href="#" class="pop_btn_blu js-modal-close">확인</a></span>
+        </div>
+        <!-- //버튼 -->
+      </div>
+    </div>
+  </div>
+  <!--popup 03 e-->
+  <!--popup 04 s-->
+  <div id="popup4" class="modal-box">
+    <div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+      <p class="modal_tit">알림</p>
+    </div>
+    <div class="modal_body">
+      <div style="padding:1.2em 0;">
+        의견을 삭제하시겠습니까?
+      </div>
+    </div>
+    <div class="modal_footer">
+      <div class="modal_footer_box">
+        <!-- 버튼 -->
+        <div class="pop_btn_wrap">
+          <span class="pop_btn_one"><a class="pop_btn_blu js-modal-close">삭제</a></span>
+        </div>
+        <!-- //버튼 -->
+      </div>
+    </div>
+  </div>
+  <!--popup 04 e-->
+
+  <div class="re_cover mt-100">
+    <div class="re_cover_wrap">
+      <div class="r_tit">자산관리보고서</div>
+      <div class="r_date">2021년10월30일</div>
+      <div class="r_dep">(주) 드림시큐리티 it인프라부</div>
+    </div>
+  </div>
+  <div class="app main">
+    <div class="section01">
+      <div class="container mt-100 mb-100">
+        <h1 class="app title">1. 종합 자산현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+
+        <div class="panel">
+          <h2 class="panel title mt-50">1-1. 자산운용 현황</h2>
+          <div class="chart-wrap">
+            <div id="chart"></div>
+            <div class="comment mt-15">&#60; 종합 자산 운용현황(최근 12개월) &#62;</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel title mt-50">1-2. 자산 지급, 미지급 현황</h2>
+          <div class="unit mb-10">(단위: 점)</div>
+          <div class="table-wrap">
+            <div class="table-inner">
+              <table>
+                <thead>
+                  <tr>
+                    <th>자산구분</th>
+                    <th>총자산</th>
+                    <th>지급</th>
+                    <th>미지급</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>하드웨어</td>
+                    <td>821</td>
+                    <td>730</td>
+                    <td>91</td>
+                  </tr>
+                  <tr>
+                    <td>소프트웨어</td>
+                    <td>991</td>
+                    <td>986</td>
+                    <td>5</td>
+                  </tr>
+                  <tr>
+                    <td>렌탈</td>
+                    <td>335</td>
+                    <td>331</td>
+                    <td>5</td>
+                  </tr>
+                  <tr>
+                    <td>합계</td>
+                    <td>2,147</td>
+                    <td>1,271</td>
+                    <td>103</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="comment mt-10">&#60; 총 자산 기준 &#62;</div>
+            </div>
+            <div class="table-inner">
+              <table>
+                <thead>
+                  <tr>
+                    <th>자산구분</th>
+                    <th>10월 신규자산</th>
+                    <th>지급</th>
+                    <th>미지급</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>하드웨어</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>소프트웨어</td>
+                    <td>152</td>
+                    <td>152</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>렌탈</td>
+                    <td>27</td>
+                    <td>25</td>
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td>합계</td>
+                    <td>183</td>
+                    <td>230</td>
+                    <td>2</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="comment mt-10">&#60; 2021년 10월 자산 기준 &#62;</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel title mt-50">1-3. 구매비용 현황(최근 12개월)</h2>
+          <div class="unit mb-10">(단위: 1,000원)</div>
+          <div class="table-wrap">
+            <div class="table-inner">
+              <table>
+                <thead>
+                  <tr>
+                    <th>월</th>
+                    <th>하드웨어</th>
+                    <th>소프트웨어</th>
+                    <th>렌탈</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>11월</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>4,389</td>
+                  </tr>
+                  <tr>
+                    <td>12월</td>
+                    <td>0</td>
+                    <td>269</td>
+                    <td>4,888</td>
+                  </tr>
+                  <tr>
+                    <td>1월</td>
+                    <td>51,130</td>
+                    <td>10,400</td>
+                    <td>5,408</td>
+                  </tr>
+                  <tr>
+                    <td>2월</td>
+                    <td>0</td>
+                    <td>4,000</td>
+                    <td>5,786</td>
+                  </tr>
+                  <tr>
+                    <td>3월</td>
+                    <td>1,522</td>
+                    <td>15,000</td>
+                    <td>6,182</td>
+                  </tr>
+                  <tr>
+                    <td>4월</td>
+                    <td>0</td>
+                    <td>100</td>
+                    <td>6,495</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-inner">
+              <table>
+                <thead>
+                  <th>월</th>
+                  <th>하드웨어</th>
+                  <th>소프트웨어</th>
+                  <th>렌탈</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>5월</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>6,703</td>
+                  </tr>
+                  <tr>
+                    <td>6월</td>
+                    <td>0</td>
+                    <td>100</td>
+                    <td>7,276</td>
+                  </tr>
+                  <tr>
+                    <td>7월</td>
+                    <td>581</td>
+                    <td>17,304</td>
+                    <td>7,572</td>
+                  </tr>
+                  <tr>
+                    <td>8월</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>7,879</td>
+                  </tr>
+                  <tr>
+                    <td>9월</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>8,285</td>
+                  </tr>
+                  <tr>
+                    <td>10월</td>
+                    <td>88,900</td>
+                    <td>13,959</td>
+                    <td>8,723</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="total-wrap mt-15">
+            <div class="title">총 구매비용(최근1년)</div>
+            <div class="number">582,857,354원</div>
+          </div>
+          <div class="total_comment mt-10">&#8251; 2021년 10월 기준 최근 1년 하드웨어, 소프트웨어, 렌탈 비용 합산 금액</div>
+        </div>
+      </div>
+    </div>
+    <!-- sec01 e -->
+
+    <div class="section02">
+      <h1 class="app title">2.구매자산 운용현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+      <div class="panel">
+        <div class="number mt-15">총 1,802점 (하드웨어3점, 소프트웨어 202점 )</div>
+        <h2 class="panel title mt-50">2-1. 하드웨어</h2>
+        <div class="chart_inner">
+          <div class="chart-wrap">
+            <div id="h_piechart"></div>
+
+          </div>
+          <div class="chart-wrap">
+            <div id="h_column_chart"></div>
+          </div>
+        </div>
+        <div class="comment mt-15">&#60;하드웨어 자산현황 &#62;</div>
+        <!-- table -->
+
+        <div class="panel">
+
+          <div class="unit mb-10">(단위: 1,000원)</div>
+          <div class="table-wrap">
+            <div class="table-inner">
+              <table>
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="border-right: 1px solid #fff; width: 30%;">항목</th>
+                    <th colspan="2" style="border-bottom: .5px solid #fff;">총자산</th>
+                    <th rowspan="2" style="width: 17.5%;">지급</th>
+                    <th rowspan="2" style="width: 17.5%;">미지급</th>
+                  </tr>
+                  <tr>
+                    <th style="width: 17.5%;">자산</th>
+                    <th style="width: 17.5%;">금액(원)</th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>데스크탑</td>
+                    <td>5</td>
+                    <td>5,873,018</td>
+                    <td>158</td>
+                    <td>20</td>
+                  </tr>
+                  <tr>
+                    <td>기타장비</td>
+
+                    <td>269</td>
+                    <td>1,063,636</td>
+                    <td>12</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>모니터</td>
+
+                    <td>10,400</td>
+                    <td>3,755,585</td>
+                    <td>159</td>
+                    <td>6</td>
+                  </tr>
+                  <tr>
+                    <td>모바일</td>
+
+                    <td>4,000</td>
+                    <td>150,559</td>
+                    <td>215</td>
+                    <td>35</td>
+                  </tr>
+                  <tr>
+                    <td>네트웍장비</td>
+
+                    <td>15,000</td>
+                    <td>1,063,636</td>
+                    <td>75</td>
+                    <td>7</td>
+                  </tr>
+                  <tr>
+                    <td>사무기기</td>
+
+                    <td>100</td>
+                    <td>8,572,284</td>
+                    <td>10</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>서버</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+
+                </tbody>
+
+
+              </table>
+
+            </div>
+          </div>
+
+
+        </div>
+
+        <table class="total-wrap mt-15">
+          <th style="width: 30%;">총계 </th>
+          <td class="number" style="width: 17.5%;">821</td>
+          <td class="number" style="width: 17.5%;">197,532,498</td>
+          <td class="number" style="width: 17.5%;">730</td>
+          <td class="number" style="width: 17.5%;">91</td>
+        </table>
+
+      </div>
+      <textarea class="comment_box" id="comtxt">
+- 데스크탑 미지급은 노후 장비 18대와 지급 대기 장비 2대
+- 모니터는 미지급은 노후 장비 5대
+- 노트북의 경우 미지급 전원 노후장비 37대
+- 모바일의 미지급은 노후 모바일 기기 17대와 지급대기 1대
+- 네트웍장비 미지급은 공유기 5대와 서버실 고장 교체용 2대
+- 서버 미지급은 1대는 지급대기이며 2대는 노후서버
+- 기타장비의 경우 UPS와 라즈베리파이(ARM) 로 구성되어 있음
+- 노후로 인한 미지급된 건은 내년에 일괄 파기를 진행할 예정임.
+- 총 자산의 항목 별 금액은 재경부의 자산데이터를 기반으로 4년 감가가 적용된 금액임.</textarea>
+      <div class="btn_wrap">
+        <button class="l_blue">의견수정</button>
+        <button class="red">삭제</button>
+      </div>
+    </div>
+
+    <!-- sec02 e-->
+    <!-- sec03 s -->
+    <div class="section03">
+
+      <div class="panel">
+        <h2 class="panel title mt-50">2-2.소프트웨어</h2>
+        <div class="chart_inner">
+          <div class="chart-wrap">
+            <div id="s_piechart"></div>
+
+          </div>
+          <div class="chart-wrap">
+            <div id="s_column_chart"></div>
+          </div>
+        </div>
+        <div class="comment mt-15">&#60;소프트웨어 자산현황 &#62;</div>
+        <!-- table -->
+
+        <div class="panel">
+
+          <div class="unit mb-10">(단위: 1,000원)</div>
+          <div class="table-wrap">
+            <div class="table-inner">
+              <table>
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="border-right: 1px solid #fff; width: 30%;">항목</th>
+                    <th colspan="2" style="border-bottom: .5px solid #fff;">총자산</th>
+                    <th rowspan="2" style="width: 17.5%;">지급</th>
+                    <th rowspan="2" style="width: 17.5%;">미지급</th>
+                  </tr>
+                  <tr>
+                    <th style="width: 17.5%;">자산</th>
+                    <th style="width: 17.5%;">금액(원)</th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>MSDN</td>
+                    <td>5</td>
+                    <td>5,873,018</td>
+                    <td>158</td>
+                    <td>20</td>
+                  </tr>
+                  <tr>
+                    <td>VMware Workstioan</td>
+
+                    <td>269</td>
+                    <td>1,063,636</td>
+                    <td>12</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>애니서포트</td>
+
+                    <td>10,400</td>
+                    <td>3,755,585</td>
+                    <td>159</td>
+                    <td>6</td>
+                  </tr>
+                  <tr>
+                    <td>M365</td>
+
+                    <td>4,000</td>
+                    <td>150,559</td>
+                    <td>215</td>
+                    <td>35</td>
+                  </tr>
+                  <tr>
+                    <td>MS OFFICE</td>
+
+                    <td>15,000</td>
+                    <td>1,063,636</td>
+                    <td>75</td>
+                    <td>7</td>
+                  </tr>
+                  <tr>
+                    <td>한글</td>
+
+                    <td>100</td>
+                    <td>8,572,284</td>
+                    <td>10</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>한글2020ALA</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>Avast ES</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>KES11(440copy)</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>V3 IS</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>VSphere</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>노턴시큐리티</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>알약</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+
+                  <tr>
+                    <td>AD usercal(50copy)</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>AD usercal(150copy)</td>
+
+                    <td>100</td>
+                    <td>172,844,272</td>
+                    <td>35</td>
+                    <td>3</td>
+                  </tr>
+
+
+
+                </tbody>
+
+
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+
+        <table class="total-wrap mt-15">
+          <th style="width: 30%;">총계 </th>
+          <td class="number" style="width: 17.5%;">821</td>
+          <td class="number" style="width: 17.5%;">197,532,498</td>
+          <td class="number" style="width: 17.5%;">730</td>
+          <td class="number" style="width: 17.5%;">91</td>
+        </table>
+
+      </div>
+      <textarea class="comment_box" id="comtxt">
+MSDN은 고가의 연간라이선스임에도 크게 효용성이 없는 것같아서 최소한만 유지한채 줄여나갈예정임.
+M365는 MS OFFICE 365 연간라이선스이며 206copy 보유 중이며 M365는 인터넷이 되는환경에서만 정품인증이 
+가능하여 외부 사업나갈때는 폐쇄망에서 사용되는 라이선스 MS OFFICE를따로 구매함.
+  </textarea>
+      <div class="btn_wrap">
+        <button class="l_blue">의견수정</button>
+        <button class="red">삭제</button>
+      </div>
+    </div>
+
+
+
+
+    <!-- sec3 e -->
+
+    <!-- sec04 s -->
+    <div class="section04">
+      <div class="container mt-100">
+        <h1 class="app title">3. 신규 구매자산 현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+        <div class="panel">
+          <div class="number mt-15">총 205점 (하드웨어3점, 소프트웨어 202점 )</div>
+          <div class="chart_inner mt-50">
+            <div class="chart-wrap">
+              <div id="n_column_chart"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="comment">&#60;2021년 10월 신규 구매 자산 현황(최근 6개월) &#62;</div>
+    </div>
+    <div class="panel">
+      <h2 class="panel title mt-50">3-1. 하드웨어 신규구매 현황</h2>
+      <table>
+        <thead>
+
+          <tr>
+            <th style="width: 5%;">순서</th>
+            <th style="width: 10%;">자산구분</th>
+            <th style="width: 25%;">모델명</th>
+            <th style="width: 20%;">가격(원)</th>
+            <th style="width: 10%;">지급대상</th>
+            <th style="width: 10%;">상태</th>
+            <th style="width: 20%;">입고일자</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr>
+            <td>3</td>
+            <td>서버</td>
+            <td>5,873,018</td>
+            <td>158</td>
+            <td>20</td>
+            <td>지급</td>
+            <td>2021-10-01</td>
+          </tr>
+          <tr>
+            <td>2</td>
+
+            <td>서버</td>
+            <td>1,063,636</td>
+            <td>12</td>
+            <td>0</td>
+            <td>지급</td>
+            <td>2021-10-01</td>
+          </tr>
+          <tr>
+            <td>1</td>
+
+            <td>스위치</td>
+            <td>3,755,585</td>
+            <td>159</td>
+            <td>6</td>
+            <td>지급</td>
+            <td>2021-10-01</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="btn_wrap">
+        <button class="l_blue">의견추가</button>
+
+      </div>
+      <h2 class="panel title mt-50">3-2. 소프트웨어 신규구매 현황</h2>
+      <table>
+        <thead>
+
+          <tr>
+            <th style="width: 5%;">순서</th>
+            <th style="width: 10%;">자산구분</th>
+            <th style="width: 25%;">모델명</th>
+            <th style="width: 20%;">가격(원)</th>
+            <th style="width: 10%;">지급대상</th>
+            <th style="width: 10%;">상태</th>
+            <th style="width: 20%;">입고일자</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          <tr>
+            <td>3</td>
+            <td>시스템관리
+
+
+            </td>
+            <td>5,873,018</td>
+            <td>158</td>
+            <td>20</td>
+            <td>지급</td>
+            <td>2021-10-01</td>
+          </tr>
+          <tr>
+            <td>2</td>
+
+            <td>문서편집</td>
+            <td>1,063,636</td>
+            <td>12</td>
+            <td>0</td>
+            <td>지급</td>
+            <td>2021-10-01</td>
+          </tr>
+          <tr>
+            <td>1</td>
+
+            <td>문서편집</td>
+            <td>3,755,585</td>
+            <td>159</td>
+            <td>6</td>
+            <td>지급</td>
+            <td>2021-10-01</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="btn_wrap">
+        <button class="l_blue">의견추가</button>
+
+      </div>
+
+      <textarea class="comment_box" id="comtxt">
+6월 구매자산
+- MS OFFICE 206 COPY 구매 (연간 라이선스)
+7월 구매자산
+- MS OFFICE 3 COPY (영구 라이선스로 폐쇄망에 사용 됨)
+- SWITCH 1 EA (노후 스위치 교체 1건)
+10월 구매자산
+- 서버 1EA ( 가상화 서버 증설)
+- 스토리지 1EA ( 가상화 서버 3중화에 쓰이기 위한 신규 도입 )
+- 스위치 1EA ( 10Gbps로 스토리지와 서버 통신에 사용)
+- Windows usercal 150 COPY (사용자 기기 AD조인하여 PC보안을 자동 조치 되도록 진행)
+- 한글 2020 50copy (연간라이선스 갱신)
+- Vsphere 2 COPY (가상화 서버 증설로 인한 라이선스 추가 구매)
+종합의견
+-10월 HW구매는 사내 가상화서버 증설로 서버, 스토리지서버, 스위치를 각각1대 구매함.
+- SW부분은 한글 2020 ALA 갱신과 가상화서버 증설로 인한 라이선스와 ISMS-P를 위하여
+사내 PC보안조치를 위해 AD라이선스 구매가 있었음.
+</textarea>
+    </div>
+    <div class="section04-1">
+      <div class="container mt-100">
+        <h1 class="app title">4.고장 자산 현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+        <div class="panel">
+          <div class="number mt-15">총 3점 (노트북3점, 모니터 1점 )</div>
+          <div class="chart_inner mt-50">
+            <div class="panel">
+              <table>
+                <thead>
+
+                  <tr>
+                    <th style="width: 5%;">순서</th>
+                    <th style="width: 10%;">자산코드</th>
+                    <th style="width: 10%;">자산구분</th>
+                    <th style="width: 25%;">모델명</th>
+                    <th style="width: 10%;">지급대상</th>
+                    <th style="width: 10%;">사용IP</th>
+                    <th style="width: 10%;">상태</th>
+                    <th style="width: 25%;">입고일자</th>
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>DSNB211</td>
+                    <td>노트북</td>
+                    <td>LG 15U550-GT5DK</td>
+                    <td>개발2팀</td>
+                    <td>-</td>
+                    <td>고장</td>
+                    <td>2021-10-20</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>DSNB208</td>
+                    <td>노트북</td>
+                    <td>LG gram 17</td>
+                    <td>총무팀</td>
+                    <td>-</td>
+                    <td>고장</td>
+                    <td>2022-02-20</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>DSMO190</td>
+                    <td>모니터</td>
+                    <td>24MP48HQ</td>
+                    <td>영업1팀</td>
+                    <td>-</td>
+                    <td>고장</td>
+                    <td>2022-03-20</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+        <textarea class="comment_box" id="comtxt">
+개발2팀,총부팀 노트북 각 1대 베터리 이상으로 인한고장 
+AS접수 (1544-7777) 및 품의 완료 
+대체자산 지급예정 </textarea>
+        <div class="btn_wrap">
+          <button class="l_blue">의견수정</button>
+          <button class="red">삭제</button>
+        </div>
+
+      </div>
+      <div class="section05">
+        <div class="container mt-100">
+          <h1 class="app title">5.폐기 자산 현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+          <div class="panel">
+            <div class="number mt-15">총 2점 (스위치 1점, 서버 1점)</div>
+            <div class="chart_inner mt-50">
+              <div class="chart-wrap">
+                <div id="n_column_chart"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <textarea class="comment_box" id="comtxt">
+폐기 자산 현황
+- 총합 69대 폐기하였으며 노트북 27대 모니터9대 스위치 6대 기타 5대
+- 대부분 오래된 모델로 최대 14년된 모델까지 폐기 진행 함
+- 현재 할당 받은 창고가 기존 서경빌딩보다 현저하게 협소하여 폐기 범위를 성능이 저하되거나5년이상 되고 오랫동안 쓰지 않은 장비이면 무조건 폐기를 단행하였음.</textarea>
+        <div class="btn_wrap">
+          <button class="l_blue">의견추가</button>
+        </div>
+
+      </div>
+      <div class="section06">
+        <div class="container mt-100">
+          <h1 class="app title">6. 렌탈자산 운용현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+          <div class="panel">
+            <div class="number mt-15">총 205점 (하드웨어3점, 소프트웨어 202점 )</div>
+            <div class="chart_inner mt-50">
+              <div class="chart-wrap">
+                <div id="rental_piechart"></div>
+              </div>
+              <div class="chart-wrap">
+                <div id="rental_column_chart"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+
+            <div class="unit mb-10">(단위: 1,000원)</div>
+            <div class="table-wrap">
+              <div class="table-inner">
+                <table>
+                  <thead>
+                    <tr>
+                      <th rowspan="2" style="border-right: 1px solid #fff; width: 30%;">항목</th>
+                      <th colspan="2" style="border-bottom: .5px solid #fff;">총자산</th>
+                      <th rowspan="2" style="width: 17.5%;">지급</th>
+                      <th rowspan="2" style="width: 17.5%;">미지급</th>
+                    </tr>
+                    <tr>
+                      <th style="width: 17.5%;">자산</th>
+                      <th style="width: 17.5%;">금액(원)</th>
+                    </tr>
+
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>데스크탑</td>
+                      <td>5</td>
+                      <td>5,873,018</td>
+                      <td>158</td>
+                      <td>20</td>
+                    </tr>
+                    <tr>
+                      <td>기타장비</td>
+
+                      <td>269</td>
+                      <td>1,063,636</td>
+                      <td>12</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>모니터</td>
+
+                      <td>10,400</td>
+                      <td>3,755,585</td>
+                      <td>159</td>
+                      <td>6</td>
+                    </tr>
+                    <tr>
+                      <td>모바일</td>
+
+                      <td>4,000</td>
+                      <td>150,559</td>
+                      <td>215</td>
+                      <td>35</td>
+                    </tr>
+                    <tr>
+                      <td>네트웍장비</td>
+
+                      <td>15,000</td>
+                      <td>1,063,636</td>
+                      <td>75</td>
+                      <td>7</td>
+                    </tr>
+                    <tr>
+                      <td>사무기기</td>
+
+                      <td>100</td>
+                      <td>8,572,284</td>
+                      <td>10</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>서버</td>
+
+                      <td>100</td>
+                      <td>172,844,272</td>
+                      <td>35</td>
+                      <td>3</td>
+                    </tr>
+
+                  </tbody>
+                  <table class="total-wrap mt-15">
+                    <th style="width: 30%;">총계 </th>
+                    <td class="number" style="width: 17.5%;">821</td>
+                    <td class="number" style="width: 17.5%;">197,532,498</td>
+                    <td class="number" style="width: 17.5%;">730</td>
+                    <td class="number" style="width: 17.5%;">91</td>
+                  </table>
+                </table>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+
+        <textarea class="comment_box" id="comtxt">렌탈 자산 운용 현황
+- 현재 업무용 장비로 신규입사/ 노후교체 모두 렌탈을 하고 있으며 모니터와 노트북이 대부분임.
+- 현재 기존 구매로 구매한 사용자의 노후교체는 90%정도 렌탈로 교체가 이루어 졌음.
+- 개발 테스트장비와 외부 사업지 나가는 부분도 단기렌탈로 진행할 예정이여서 내년에도 꾸준한증가폭이 예상됨.</textarea>
+
+
+
+
+        <div class="btn_wrap">
+          <button class="l_blue">의견수정</button>
+          <button class="red">삭제</button>
+        </div>
+
+      </div>
+      <div class="section07">
+        <div class="container mt-100 mb-100">
+          <h1 class="app title">7. 렌탈자산 이용료 현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+
+          <div class="panel">
+            <h2 class="panel title mt-50"></h2>
+            <div class="chart-wrap">
+              <div id="r_fee_chart-wrap"></div>
+              <div class="comment mt-15">&#60; 렌탈자산 이용료 현황(최근 12개월) &#62;</div>
+            </div>
+          </div>
+          <div class="panel">
+
+            <div class="unit mb-10">(단위:원)</div>
+            <div class="table-wrap">
+              <div class="table-inner">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>월</th>
+                      <th>하드웨어</th>
+                      <th>소프트웨어</th>
+                      <th>렌탈</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>11월</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>4,389</td>
+                    </tr>
+                    <tr>
+                      <td>12월</td>
+                      <td>0</td>
+                      <td>269</td>
+                      <td>4,888</td>
+                    </tr>
+                    <tr>
+                      <td>1월</td>
+                      <td>51,130</td>
+                      <td>10,400</td>
+                      <td>5,408</td>
+                    </tr>
+                    <tr>
+                      <td>2월</td>
+                      <td>0</td>
+                      <td>4,000</td>
+                      <td>5,786</td>
+                    </tr>
+                    <tr>
+                      <td>3월</td>
+                      <td>1,522</td>
+                      <td>15,000</td>
+                      <td>6,182</td>
+                    </tr>
+                    <tr>
+                      <td>4월</td>
+                      <td>0</td>
+                      <td>100</td>
+                      <td>6,495</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-inner">
+                <table>
+                  <thead>
+                    <th>월</th>
+                    <th>하드웨어</th>
+                    <th>소프트웨어</th>
+                    <th>렌탈</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>5월</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>6,703</td>
+                    </tr>
+                    <tr>
+                      <td>6월</td>
+                      <td>0</td>
+                      <td>100</td>
+                      <td>7,276</td>
+                    </tr>
+                    <tr>
+                      <td>7월</td>
+                      <td>581</td>
+                      <td>17,304</td>
+                      <td>7,572</td>
+                    </tr>
+                    <tr>
+                      <td>8월</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>7,879</td>
+                    </tr>
+                    <tr>
+                      <td>9월</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>8,285</td>
+                    </tr>
+                    <tr>
+                      <td>10월</td>
+                      <td>88,900</td>
+                      <td>13,959</td>
+                      <td>8,723</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="panel">
+            <div class="total-wrap mt-15">
+              <div class="title">총계</div>
+              <div class="number">75,695,440원</div>
+            </div>
+            <div class="total_comment mt-10">&#8251; 2021년 10월 기준 최근 1년 하드웨어, 소프트웨어, 렌탈 비용 합산 금액</div>
+          </div>
+          <textarea class="comment_box" id="comtxt">
+렌탈자산 이용료 현황
+- 신규 입사자 증가를 중심으로 렌탈비용이 증가하며 품목은 노트북과 모니터가 주력임.
+-향후 렌탈자산 이용료 예상
+- 내년에 개발테스트, 외부 사업 또한 단기렌탈로 진행 예정이여서 장기 렌탈보다 상대적으로 금액이 큰 단기렌탈로 인하여 비용증가는 꾸준할 것으로 예상됨.
+- 변수 사항으로는 현재 IOS 개발자를 제외한 나머지 개발자는 일반 사무용 수준의 노트북을
+사용하기 때문에 성능불만을 항상 품고 있어서 렌탈자산 이를 반영해 준다면 비용 증가가 될 수 있음.</textarea>
+          <div class="btn_wrap">
+            <button class="l_blue">의견수정</button>
+            <button class="red">삭제</button>
+          </div>
+
+        </div>
+        <!-- sec07닫음 -->
+        <!--  sec08시작 -->
+        <div class="section08">
+          <div class="container mt-100 mb-100">
+            <h1 class="app title">8.신규 렌탈자산 현황 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+            <div class="number mt-15">총 10점 (노트북 4점, 모니터 4점, 데스크탑 2점)</div>
+            <div class="chart_inner mt-50">
+              <div class="chart-wrap">
+                <div id="n_rental_column_chart"></div>
+                <div class="comment mt-15">&#60;2021년 10월 신규구매 자산 현황(최근 6개월) &#62;</div>
+              </div>
+
+              <div class="panel mt-50">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+
+                      <tr>
+                        <th style="width: 5%;">순서</th>
+                        <th style="width: 15%;">자산코드</th>
+                        <th style="width: 10%;">자산구분</th>
+                        <th style="width: 25%;">모델명</th>
+                        <th style="width: 10%;">지급대상</th>
+                        <th style="width: 5%;">상태</th>
+                        <th style="width: 15%;">렌탈일자</th>
+                        <th style="width: 15%;">렌탈반납</th>
+                      </tr>
+
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>범진규</td>
+                        <td>지급</td>
+                        <td>2021-10-01</td>
+                        <td>2025-12-01</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>범진규</td>
+                        <td>지급</td>
+                        <td>2021-10-01</td>
+                        <td>2025-12-01</td>
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>범진규</td>
+                        <td>지급</td>
+                        <td>2021-10-01</td>
+                        <td>2025-12-01</td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>범진규</td>
+                        <td>지급</td>
+                        <td>2021-10-01</td>
+                        <td>2025-12-01</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="number mt-5 right">10점</div>
+              </div>
+
+            </div>
+
+            <textarea class="comment_box" id="comtxt">
+1. A프로젝트 복귀 예정인 사업운영팀 노후된 노트북 교체
+2. 디자인팀 정우성 차장 성능상 이유로 데스크탑 교체
+3. 디자인팀 교체 예정인 모니터 4대 미지급으로 보유
+4. 외부 개발 상주인원 노트북 지원: 맥북프로 3대
+5. 기타 장기 재택 인력 장비 일부 회수 및 전환 지원</textarea>
+            <div class="btn_wrap">
+              <button class="l_blue">의견수정</button>
+              <button class="red">삭제</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- sec08닫음 -->
+        <!-- sec09시작 -->
+        <div class="section09">
+          <div class="container mt-100 mb-100">
+            <h1 class="app title">9. 렌탈 만료 예정 목록 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+            <div class="number mt-15">총 12점 (노트북 9점, 모니터 16점)</div>
+            <div class="chart_inner mt-50">
+
+
+              <div class="panel">
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+
+                      <tr>
+                        <th style="width: 5%;">순서</th>
+                        <th style="width: 15%;">자산코드</th>
+                        <th style="width: 10%;">자산구분</th>
+                        <th style="width: 25%;">계약일</th>
+                        <th style="width: 10%;">계약만료일</th>
+                        <th style="width: 10%;">지급대상</th>
+                        <th style="width: 10%;">잔여일</th>
+                      </tr>
+
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>2025-10-01</td>
+                        <td>지급</td>
+                        <td>50</td>
+
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>2025-10-01</td>
+                        <td>지급</td>
+                        <td>50</td>
+
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>2025-10-01</td>
+                        <td>지급</td>
+                        <td>50</td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>RTPC004</td>
+                        <td>데스크탑</td>
+                        <td>M70Q TINY</td>
+                        <td>2025-10-01</td>
+                        <td>지급</td>
+                        <td>50</td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="number mt-5 right"> 12점</div>
+              </div>
+              <textarea class="comment_box" id="comtxt">
+만료가 다가오는 11점의 모니터 장비의 경우 연장 후 자산으로 인수 처리 진행예정
+모니터는 새제품으로 갱신하여 동일한 스펙으로 렌탈되기 때문에 비용절감 차원에서
+1년 자동 연장후 자산으로 인수 정책을 유지하고있음</textarea>
+              <div class="btn_wrap">
+                <button class="l_blue">의견수정</button>
+                <button class="red">삭제</button>
+              </div>
+
+            </div>
+          </div>
+          <!-- 첨부영역//별첨  -->
+          <div class="attachment">
+            <div class="container mt-100 mb-100">
+              <h1 class="app title">첨부 렌탈 만료 예정 목록 <span class="sub">(2021년 10월 30일 기준)</span></h1>
+              <div class="number mt-15">총 27점 (노트북 9점, 모니터 16점)</div>
+              <div class="chart_inner mt-50">
+                <div class="panel">
+                  <div class="table-wrap">
+                    <table>
+                      <thead>
+
+                        <tr>
+                          <th style="width: 5%;">순서</th>
+                          <th style="width: 15%;">자산코드</th>
+                          <th style="width: 10%;">자산구분</th>
+                          <th style="width: 15%;">모델명</th>
+                          <th style="width: 10%;">지급대상</th>
+                          <th style="width: 10%;">상태</th>
+                          <th style="width: 15%;">렌탈일자</th>
+                          <th style="width: 15%;">렌탈반납일자</th>
+                        </tr>
+
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <td>RTPC004</td>
+                          <td>데스크탑</td>
+                          <td>M70Q TINY</td>
+                          <td>홍길동</td>
+                          <td>지급</td>
+
+                          <td>2020-10-01</td>
+                          <td>2025-10-01</td>
+
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>RTPC004</td>
+                          <td>데스크탑</td>
+                          <td>M70Q TINY</td>
+
+                          <td>홍길동</td>
+                          <td>지급</td>
+                          <td>2020-10-01</td>
+                          <td>2025-10-01</td>
+
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <td>RTPC004</td>
+                          <td>데스크탑</td>
+                          <td>M70Q TINY</td>
+                          <td>홍길동</td>
+                          <td>지급</td>
+                          <td>2020-10-01</td>
+                          <td>2025-10-01</td>
+                        </tr>
+                        <tr>
+                          <td>4</td>
+                          <td>RTPC004</td>
+                          <td>데스크탑</td>
+                          <td>M70Q TINY</td>
+                          <td>홍길동</td>
+                          <td>지급</td>
+                          <td>2020-10-01</td>
+                          <td>2025-10-01</td>
+
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="number mt-5 right"> 27점</div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- appmain -->
+        </div>
+
+
+</body>
+
+</html>

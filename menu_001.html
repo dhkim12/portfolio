@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+	<title>ITAM 자산관리</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!--[if lte IE 8 ]>
+	<link rel="stylesheet" type="text/css" href="css/layout_ie8.css" />
+	<script type="text/javascript" src="js/poly-checked.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="css/common.css" />
+
+	<style type="text/css">
+		#lnb>ul>li ul {
+			display: none;
+			background: #2B3239;
+		}
+	</style>
+
+	<script src="js/jquery-3.5.1.min.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/jquery-nav.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/sideupdown.js"></script>
+	<!-- <script src="js/accodion.js"></script> -->
+	<script src="js/jquery-autoclear.min.js"></script>
+	<script src="js/jquery-select.js"></script>
+	<script src="js/jquery.tablesorter.min.js"></script>
+	<script src="js/highcharts.js"></script>
+	<script src="js/charts.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.tab_hw ul li a').click(function () {
+				var tab_id = $(this).attr('data-tab');
+
+				$('.tab_hw ul li a').removeClass('hw_on');
+				$('.tab_con_box01').removeClass('hw_on');
+
+				$(this).addClass('hw_on');
+				$("#" + tab_id).addClass('hw_on');
+			});
+
+			$('.tab_sw ul li a').click(function () {
+				var tab_id = $(this).attr('data-tab');
+
+				$('.tab_sw ul li a').removeClass('sw_on');
+				$('.tab_con_box02').removeClass('sw_on');
+
+				$(this).addClass('sw_on');
+				$("#" + tab_id).addClass('sw_on');
+			});
+		});
+
+		// 한국 렌탈 데이터 가져오기
+		$(document).ready(function () {
+			$("#popup2 .la-close").click(function () {
+				$("#popup2").css("display", "none");
+				fadeClose('popup2');
+				return;
+			});
+
+			var a;
+
+			// '데이터 가져오기' 클릭 시
+			$(".btn_load_rental").click(function () {
+				// '데이터 로드' 레이어 표시
+				$("#popup2").css("display", "none");
+				fade('popup3');
+
+				if ($("#popup3").css("display") == "block") {
+					// 3초 후 loading-text 100%로 표시 및 '동기화 완료' 레이어 표시.
+
+					a = setTimeout(function () {
+						$("#loading-text").text("100%");
+
+						setTimeout(function () {
+							$("#popup3").css("display", "none");
+							fade('popup4');
+
+							$(".btn_modal_close").click(function () {
+								$("#popup4").css("display", "none");
+								return;
+
+								clearTimeout(2);
+							});
+
+							$("#popup4 .la-close").click(function () {
+								$("#popup4").css("display", "none");
+								return;
+
+								clearTimeout(3);
+							});
+						}, 1000);
+					}, 3000);
+				}
+			});
+
+			// '데이터 로드' 레이어에서 'X' 버튼 클릭 시
+			$("#popup3 .la-close").click(function () {
+				clearTimeout(a);
+
+				$("#popup3").css("display", "none");
+				return;
+			});
+
+			$("#popup3 .la-close").click(function () {
+				$("#popup3").css("display", "none");
+				return;
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div id="container">
+		<!-- Hearder AREA : S -->
+		<div id="header">
+			<div class="header_area">
+				<div class="hd_logo_wrap">
+					<div class="hd_logo" tabindex="-1">
+						<a href="menu_001.html">
+							<span class="ad_logo"><img src="images/logo.png" alt="관리자 로고" /></span>
+							<span class="ad_text">IT 자산관리</span>
+						</a>
+					</div>
+				</div>
+
+				<div class="hd_menu">
+					<div class="hamburger nav-toggle">
+						<a href="#">
+							<span class="screen-reader-text">
+								<span class="listIcon"><i class="las la-bars"></i></span>
+							</span>
+						</a>
+					</div>
+					<div class="brand_text02">드림시큐리티</div>
+				</div>
+				<div class="hd_logout">
+					<ul>
+						<li><a href="../service_login.html" tabindex="-1"><i class="la la-power-off"></i>로그아웃</a></li>
+					</ul>
+				</div>
+				<div class="hd_user">
+					<ul>
+						<!-- <li>
+							<a href="" tabindex="-1">
+								<span class="txt_blue" data-tooltip-text="회사명: 드림시큐리티&#10;&#13;담당자: 김고객&#10;&#13;연락처: 010-7789-4406&#10;&#13;이메일: customer@company.co.kr">홍길동</span>
+								님 안녕하세요.
+							</a>
+						</li> -->
+						<li>
+							<span class="txt_blue"
+								data-tooltip-text="회사명: 드림시큐리티&#10;&#13;담당자: 김고객&#10;&#13;연락처: 010-7789-4406&#10;&#13;이메일: customer@company.co.kr">홍길동</span>
+							님 안녕하세요.
+						</li>
+					</ul>
+				</div>
+				<div class="hd_info">
+					<ul>
+						<li style="display:none;">
+							<a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">무료이용기간이 30일 남았습니다.</a>
+						</li>
+						<li style="display:none;">
+							<a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">서비스 미납중 입니다. 미납기간: 1개월/
+								미납금액: 50,000원</a>
+						</li>
+						<li>
+							<a href="#" tabindex="-1" class="txt_red" data-modal-id="popup10">이용 상품 : Business</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- Hearder AREA : E -->
+
+		<!-- Content AREA : S -->
+		<div id="content">
+			<div id="content_area">
+
+				<!-- nav : S -->
+				<div id="nav_wrap" tabindex="-1">
+					<div id="nav_area">
+						<div class="nav_box">
+
+							<!-- nav -->
+							<div role="navigation" class="menu">
+								<div class="menu_wrap">
+
+									<!-- left nav -->
+									<div id="lnb">
+										<ul>
+											<li class="on">
+												<a href="menu_001.html" tabindex="-1">
+													<span><i class="la la-clipboard"></i></span>
+													<span class="nav_txt">대시보드</span>
+												</a>
+											</li>
+											<li>
+												<a href="menu_002_list.html" tabindex="-1">
+													<span><i class="la la-th-list"></i></span>
+													<span class="nav_txt">할당자산 일괄조회</span>
+												</a>
+											</li>
+											<li class="side_hw">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_003_reg01.html'">등록</button></span>
+												<a href="./menu_003_list_all.html" tabindex="-1">
+													<span><i class="la la-laptop"></i></span>
+													<span class="nav_txt">하드웨어(H/W)</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+
+												<ul>
+													<li><a href="menu_003_list01.html" tabindex="-1">노트북</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">데스크톱</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">모니터</a></li>
+													<li><a href="menu_003_list01.html" tabindex="-1">서버</a></li>
+													<li><a href="menu_003_list02.html" tabindex="-1">네트웍장비</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">모바일기기</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">사무기기</a></li>
+													<li><a href="menu_003_list03.html" tabindex="-1">기타장비</a></li>
+												</ul>
+											</li>
+											<li class="side_sw">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_004_reg.html'">등록</button></span>
+												<a href="menu_004_list.html" tabindex="-1">
+													<span><i class="la la-terminal"></i></span>
+													<span class="nav_txt">소프트웨어(S/W)</span>
+												</a>
+											</li>
+											<li class="side_etc">
+												<span class="side_btn01"><button type="button"
+														onclick="location.href='menu_005_reg.html'">등록</button></span>
+												<a href="#" tabindex="-1">
+													<span><i class="la la-info-circle"></i></span>
+													<span class="nav_txt">기타IT관리정보</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li class="side_btn_box">
+														<!-- <span class="side_btn02"><button type="button" onclick="location.href='menu_005_set.html'">설정</button></span> -->
+														<a href="menu_005_list01.html" tabindex="-1">IP사용현황</a>
+													</li>
+													<li><a href="menu_005_list02.html" tabindex="-1">도메인</a></li>
+												</ul>
+											</li>
+											<!-- 보고서관리 추가 //2차고도화 -->
+											<li class="side_report" id="22">
+												<!-- <span class="side_btn01"><button type="button"
+																																				onclick="location.href='menu_005_reg.html'">등록</button></span> -->
+												<a href="menu_005_list02.html" tabindex="-1" style="padding-left:22px;
+    font-size: 20px;">
+													<i class="demo-icon icon-report">&#xe800;</i>
+													<!-- <span><i class="la la-info-circle"></i></span> -->
+
+													<span class="nav_txt" style="top: 18px;">보고서</span>
+
+
+													<!-- <span class="nav_arrow"><i class="la la-angle-right"></i></span> -->
+												</a>
+											</li>
+											<li class="side_option">
+												<a href="#" tabindex="-1">
+													<span><i class="la la-cog"></i></span>
+													<span class="nav_txt">환경설정</span>
+													<span class="nav_arrow"><i class="la la-angle-right"></i></span>
+												</a>
+												<ul>
+													<li><a href="menu_006_list02.html" tabindex="-1">부서설정</a></li>
+													<li><a href="menu_006_list03.html" tabindex="-1">인사정보설정</a></li>
+													<li><a href="menu_005_set.html" tabindex="-1">IP대역설정</a></li>
+													<li><a href="menu_006_list01.html" tabindex="-1">자산일괄등록</a></li>
+													<li><a href="menu_006_modi04.html" tabindex="-1">정보변경</a></li>
+													<!-- <li><a href="" tabindex="-1">라벨등록양식설정</a></li> -->
+												</ul>
+											</li>
+										</ul>
+									</div>
+									<!-- //left nav -->
+
+								</div>
+							</div>
+							<!-- //nav -->
+
+						</div>
+					</div>
+				</div>
+				<!-- nav : E -->
+
+				<!-- Content : S -->
+				<div id="con_wrap">
+					<div id="con_area">
+						<div class="con_box">
+							<div class="con_dash_wrap">
+
+								<!-- Content_table : S -->
+								<div class="dash_col_box01">
+									<div class="flex1 h_100p">
+										<div class="dash_box bg_blue h_100p">
+											<div class="dash_tit_wrap txt_wh">
+												총 자산현황
+												<span class="user_num">총 이용자 <span class="txt_bold">65</span><span
+														class="all_num01"> / 100 (명)</span></span>
+											</div>
+											<div class="dash_con_wrap">
+												<div class="txt_st01">601<span class="all_num02"> / 250 (점)</span></div>
+												<div class="txt_st02">
+													<span class="icon_st01"><i class="la la-shopping-cart"></i>렌탈
+														174점</span>
+													<span class="icon_st01"><i class="la la-archive"></i>구매 427점</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="width_25p h_100p">
+										<div class="dash_box h_100p">
+											<div class="dash_tit_wrap">
+												<i class="la la-won"></i>렌탈 이용료 납부현황
+											</div>
+											<div class="dash_con_wrap">
+												<div class="dash_table_wrap01">
+													<table>
+														<colgroup>
+															<col style="width:70%;">
+															<col style="width:30%;">
+														</colgroup>
+														<tbody>
+															<tr class="bg_gry">
+																<td>당월 납부 금액</td>
+																<td>5,216,750원</td>
+															</tr>
+															<tr>
+																<td>당월 납부 예정금액</td>
+																<td>0원</td>
+															</tr>
+															<tr class="bg_gry">
+																<td>익월 납부 예정금액</td>
+																<td>5,216,750원</td>
+															</tr>
+															<tr>
+																<td>총 미납금액</td>
+																<td>0원</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="width_25p h_100p">
+										<div class="dash_box h_100p">
+											<div class="dash_tit_wrap">
+												<i class="la la-shopping-cart"></i>렌탈 현황
+
+											</div>
+											<div class="dash_con_wrap">
+												<div class="dash_table_wrap01">
+													<table>
+														<colgroup>
+															<col style="width:70%;">
+															<col style="width:30%;">
+														</colgroup>
+														<tbody>
+															<tr>
+																<td>당월 반납 예정</td>
+																<td>7점</td>
+															</tr>
+															<tr class="bg_gry">
+																<td>익월 반납 예정</td>
+																<td>5점</td>
+															</tr>
+															<tr>
+																<td>당월 미반납</td>
+																<td>2점</td>
+															</tr>
+															<tr class="bg_gry">
+																<td>지급수량</td>
+																<td>147점</td>
+															</tr>
+															<tr>
+																<td>미지급 수량</td>
+																<td>27점</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="flex1 h_100p">
+										<div class="dash_box h_100p">
+											<div class="dash_tit_wrap">
+												<i class="la la-archive"></i>구매현황
+											</div>
+											<div class="dash_con_wrap">
+												<div class="dash_table_wrap01">
+													<table>
+														<colgroup>
+															<col style="width:50%;">
+															<col style="width:50%;">
+														</colgroup>
+														<tbody>
+															<tr class="bg_gry">
+																<td>하드웨어자산</td>
+																<td>175점</td>
+															</tr>
+															<tr>
+																<td>소프트웨어 자산</td>
+																<td>252점</td>
+															</tr>
+															<tr class="bg_gry">
+																<td>지급수량(H/S)</td>
+																<td>407 (162/245)점</td>
+															</tr>
+															<tr>
+																<td>미지급수량(H/S)</td>
+																<td>407 (162/245)점</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Content_table : E -->
+
+								<!-- Content_table : S -->
+								<div class="dash_col_box02">
+									<div class="width_100p h_100p">
+										<div class="dash_box h_100p">
+											<!-- <div class="dash_tit_wrap">
+												렌탈 만료예정 목록<span class="txt_gry"> (최근 30일)</span>
+												<span class="icon_st02 txt_pur">총 10건</span>
+											</div> -->
+											<div class="dash_con_wrap">
+												<div class="dash_table_wrap02">
+													<div class="dash_tb_con_box fixed_wrap h_220">
+														<table>
+															<thead>
+																<tr class="fixed_top">
+																	<th class="col_5">순서</th>
+																	<th class="col_15">자산코드</th>
+																	<th class="col_10">품목</th>
+																	<th class="col_20">계약일</th>
+																	<th class="col_20">계약만료일</th>
+																	<th class="col_10">담당자</th>
+																	<th class="col_10">이력메모</th>
+																	<th class="col_10">잔여일</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr style="display:none;">
+																	<td class="txt_center" colspan="8">지급 변경된 자산이 없습니다.
+																	</td>
+																</tr>
+																<tr>
+																	<td class="col_5">9</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">8</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">7</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">6</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">5</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">4</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">3</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">2</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+																<tr>
+																	<td class="col_5">1</td>
+																	<td class="col_15">DSPS001</td>
+																	<td class="col_10">스위치</td>
+																	<td class="col_20">20200729</td>
+																	<td class="col_20">20201030</td>
+																	<td class="col_10">홍길동</td>
+																	<td class="col_10">
+																		<a href="#">
+																			<span class="btn_action"
+																				data-tooltip-text="[20200529][지급] 서비스사업본부&#10;&#13;[20200529][입고]">
+																				<i class="la la-comment"></i>
+																			</span>
+																		</a>
+																	</td>
+																	<td class="col_10">3일</td>
+																</tr>
+
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="width_100p h_100p">
+										<div class="dash_box h_100p">
+											<div class="dash_tit_wrap">
+												업무알림
+												<span class="icon_st02">
+													<a href="alarm_all.html" class="txt_gry">전체보기<i
+															class="la la-angle-right txt_gry"></i></a>
+												</span>
+											</div>
+											<div class="dash_con_wrap">
+												<div class="alarm_box">
+													<div class="alarm">
+														<span class="alarm_icon01"><i class="la la-bell"></i></span>
+														<div class="alarm_info_box01">
+															<a href="alarm_hw.html">
+																<span class="alarm_info_tit">하드웨어</span>
+																<span class="alarm_info_con">17건</span>
+															</a>
+														</div>
+													</div>
+													<div class="alarm">
+														<span class="alarm_icon02"><i class="la la-bell"></i></span>
+														<div class="alarm_info_box02">
+															<a href="alarm_sw.html">
+																<span class="alarm_info_tit">소프트웨어</span>
+																<span class="alarm_info_con">8건</span>
+															</a>
+														</div>
+													</div>
+													<div class="alarm">
+														<span class="alarm_icon03"><i class="la la-bell"></i></span>
+														<div class="alarm_info_box03">
+															<a href="alarm_etc.html">
+																<span class="alarm_info_tit">기타</span>
+																<span class="alarm_info_con">3건</span>
+															</a>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Content_table : E -->
+
+								<!-- Content_table : S -->
+								<div class="dash_col_box02">
+									<div class="width_100p h_100p">
+										<div class="dash_box h_100p">
+											<div class="dash_tit_wrap">
+												하드웨어 자산현황
+											</div>
+											<div class="dash_con_wrap">
+												<div class="dash_chart_wrap01 width_50p">
+													<div class="chart_box">
+														<div id="pie_chart01" style="height:230px; width: 100%;"></div>
+													</div>
+												</div>
+
+												<div class="dash_chart_wrap01 width_50p border_0">
+													<div class="chart_box">
+														<div id="bar_chart01" style="height:230px; width: 100%;"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="width_100p h_100p">
+										<div class="dash_box h_100p">
+											<div class="dash_tit_wrap">
+												소프트웨어 자산현황
+												<span class="icon_st02">
+													<span class="width_150">
+														<select name="SW_selec" class="select" id="SW_selec">
+															<option value="SW_selec01">개발용 IDE</option>
+															<option value="SW_selec02">시스템관리</option>
+															<option value="SW_selec03">디자인 SW</option>
+															<option value="SW_selec04">문서편집</option>
+															<option value="SW_selec05">데이터베이스</option>
+															<option value="SW_selec06">기타</option>
+														</select>
+													</span>
+												</span>
+											</div>
+											<div class="dash_con_wrap">
+												<div class="dash_chart_wrap02 width_50p">
+													<div class="chart_box">
+														<div id="pie_chart02" style="height:250px; width: 100%;"></div>
+													</div>
+												</div>
+												<div class="dash_chart_wrap02 width_50p border_0">
+													<div class="chart_box">
+														<div id="bar_chart02" style="height:230px; width: 100%;"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Content_table : E -->
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Content : E -->
+
+			</div>
+		</div>
+		<!-- Content AREA : E -->
+
+	</div>
+
+	<!-- layer start -->
+	<!--
+		popup 1 : 계약진행과정 레이어
+		popup 2 : rup 동기화 1 (처음)
+		popup 3 : rup 동기화 2 (진행중)
+		popup 4 : rup 동기화 3 (완료)
+	-->
+	<!-- alert01 : S -->
+	<div id="popup10" class="modal-box-al">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">
+				이용 상품정보
+			</p>
+		</div>
+		<div class="modal_body pb_0">
+			<div>
+				<div class="ser_info_box02">
+
+					<table class="dt_tbl07">
+						<tbody>
+							<tr>
+								<td class="dt_tbl_col_th">이용 중인 상품</td>
+								<td class="dt_tbl_col_con txt_bold">Trial</td>
+								<td class="dt_tbl_col_th">현재 사용자</td>
+								<td class="dt_tbl_col_con">96명</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">시작일</td>
+								<td class="dt_tbl_col_con">2021. 04. 15</td>
+								<td class="dt_tbl_col_th">현재 운용자산 ( HW / SW )</td>
+								<td class="dt_tbl_col_con">361점 ( 270 / 91 )</td>
+							</tr>
+							<tr>
+								<td class="dt_tbl_col_th">종료일</td>
+								<td class="dt_tbl_col_con">2021. 07. 14</td>
+								<td class="dt_tbl_col_th">가격 ( 월, VAT제외 )</td>
+								<td class="dt_tbl_col_con">무료 ( <span class="txt_red">83일</span> / 90일 )</td>
+							</tr>
+						</tbody>
+					</table>
+					<p><span class="badge"></span>(주)Customer.inc 고객님께 <span class="txt_red">추천하는 상품</span>은 <span
+							class="txt_bold ">Business</span>입니다.</p>
+				</div>
+				<div class="ser_tb_wrap02">
+					<table class="dt_tbl06">
+						<colgroup>
+							<col style="width:20%;">
+							<col style="width:20%;">
+							<col style="width:20%;">
+							<col style="width:20%;">
+							<col style="width:20%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th>상품명</th>
+								<th>이용자 수</th>
+								<th>운용 자산 수</th>
+								<th>가격 (월, VAT제외)</th>
+								<th>비고</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="txt_bold">Trial</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>90일 무료</td>
+							</tr>
+							<tr class="bg_gry">
+								<td class="txt_bold">Office</td>
+								<td>1~60명</td>
+								<td>~250개</td>
+								<td>10,000원</td>
+								<td>월 구독</td>
+							</tr>
+							<tr>
+								<td class="txt_bold">Business</td>
+								<td>61~100명</td>
+								<td>~400개</td>
+								<td>30,000원</td>
+								<td>월 구독</td>
+							</tr>
+							<tr class="bg_gry">
+								<td class="txt_bold">Business+</td>
+								<td>제한없음</td>
+								<td>제한없음</td>
+								<td>50,000원</td>
+								<td>월 구독</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<!-- 버튼 -->
+				<div class="pop_btn_wrap">
+					<span class="pop_btn_one">
+						<a href="menu_006_modi04.html" class="pop_btn_blu width_100 js-modal-close">상품 변경하기</a>
+					</span>
+				</div>
+				<!-- //버튼 -->
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- alert01 : E -->
+
+	<!-- alert02 : S -->
+	<!-- <div id="popup2" class="modal-box-top">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">
+				Rental User Portal 에서 렌탈 중인<br />
+				<span class="txt_bold txt_blue">[드림시큐리티]</span>님의 IT자산정보를 가져오시겠습니까?
+			</p>
+		</div>
+		<div class="modal_body pb_0">
+			<div>
+				<div class="update_box">
+					<p class="update_noti">※ 데이터를 가져오지 않으실 경우 자산정보를 직접 등록 하셔야 합니다.</p>
+					<span>
+						<a class="pop_btn_wht_line width_300 btn_load_rental">데이터 가져오기</a>
+					</span>
+				</div>
+				<div class="update_ex_box">
+					<span class="txt_gry">IT자산관리 서비스에서 관리하는 Rental User Portal 자산 정보는</span><br />
+					하드웨어(노트북, 데스크톱, 모니터, 서버, 네트워크장비, 모바일기기, 사무기기, 기타장비) 입니다.
+				</div>
+			</div>
+		</div>
+	</div> -->
+	<!-- alert02 : E -->
+
+	<!-- alert03 : S -->
+	<!-- <div id="popup3" class="modal-box-top" style="display:none;">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">IT자산정보를 가져오는 중입니다.</p>
+		</div>
+		<div class="modal_body pb_0">
+			<div>
+				<div class="update_box">
+					<p class="update_noti">브라우저를 종료하지 말고 잠시만 기다리세요..</p>
+					<div class="loading-container">
+						<div class="loading"></div>
+						<div id="loading-text">70%</div>
+					</div>
+				</div>
+				<div class="update_ex_box">
+					<span class="txt_gry">IT자산관리 서비스에서 관리하는 Rental User Portal 자산 정보는</span><br />
+					하드웨어(노트북, 데스크톱, 모니터, 서버, 네트워크장비, 모바일기기, 사무기기, 기타장비) 입니다.
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+
+	<!-- alert03 : E -->
+
+	<!-- alert04 : S -->
+	<div id="popup4" class="modal-box-top" style="display:none;">
+		<div class="modal_header"><a class="js-modal-close pop_close"><i class="la la-close"></i></a>
+			<p class="modal_tit">IT자산정보 동기화가 완료되었습니다.</p>
+		</div>
+		<div class="modal_body pb_0">
+			<div>
+				<div class="update_ex_box">
+					<p class="update_noti txt_wh">아래와 같이 <span class="txt_blue">[드림시큐리티]</span>님의 IT자산데이터를 동기화하였습니다.</p>
+					<p class="update_num txt_yellow">총 수량 240점 </p>
+					<div class="device_box">
+						<div class="device_circle">
+							<img src="images/device_icon01.png" />
+							<span class="cir_tit02">노트북</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+						<div class="device_circle">
+							<img src="images/device_icon02.png" />
+							<span class="cir_tit02">데스크톱</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+						<div class="device_circle">
+							<img src="images/device_icon03.png" />
+							<span class="cir_tit02">모니터</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+						<div class="device_circle">
+							<img src="images/device_icon04.png" />
+							<span class="cir_tit02">서버</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+					</div>
+					<div class="device_box">
+						<div class="device_circle">
+							<img src="images/device_icon05.png" />
+							<span class="cir_tit02">모바일기기</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+						<div class="device_circle">
+							<img src="images/device_icon06.png" />
+							<span class="cir_tit02">네트웍장비</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+						<div class="device_circle">
+							<img src="images/device_icon07.png" />
+							<span class="cir_tit02">사무기기</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+						<div class="device_circle">
+							<img src="images/device_icon08.png" />
+							<span class="cir_tit02">기타장비</span>
+							<span class="cir_sub02">30점</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal_footer">
+			<div class="modal_footer_box">
+				<span>
+					<a class="pop_btn_wht_line width_140 js-modal-close btn_modal_close">닫기</a>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- alert04 : E -->
+	<!-- layer end -->
+</body>
+
+</html>
